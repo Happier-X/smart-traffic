@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- 背景圆 -->
+  <circle cx="100" cy="100" r="90" fill="#4285F4" />
+  <circle cx="100" cy="100" r="70" fill="#5E97F6" />
+  
+  <!-- 道路 -->
+  <path d="M30,100 L170,100" stroke="white" stroke-width="12" stroke-linecap="round" />
+  <path d="M30,100 L170,100" stroke="#FFF" stroke-width="10" stroke-linecap="round" stroke-dasharray="10,10" />
+  
+  <!-- 交通灯元素 -->
+  <rect x="75" y="40" width="50" height="120" rx="5" ry="5" fill="#34A853" />
+  
+  <!-- 交通灯指示灯 -->
+  <circle cx="100" cy="65" r="12" fill="#FBBC05" /> <!-- 黄灯 -->
+  <circle cx="100" cy="100" r="12" fill="#EA4335" /> <!-- 红灯 -->
+  <circle cx="100" cy="135" r="12" fill="#FFFFFF" /> <!-- 绿灯 -->
+  
+  <!-- 智能元素 - 连接线 -->
+  <path d="M40,40 L70,70 M160,40 L130,70 M40,160 L70,130 M160,160 L130,130" 
+        stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+</svg>
