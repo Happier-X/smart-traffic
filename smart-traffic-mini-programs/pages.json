@@ -18,6 +18,12 @@
       "style": {
         "navigationBarTitleText": "uni-app"
       }
+    },
+    {
+      "path": "pages/bus/index",
+      "style": {
+        "navigationBarTitleText": "公交查询"
+      }
     }
   ],
   "globalStyle": {
