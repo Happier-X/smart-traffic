@@ -3,6 +3,7 @@
 		<image class="logo" src="/static/logo.png"></image>
 		<view class="text-area">
 			<text class="title">{{title}}</text>
+			<wd-button>主要按钮</wd-button>
 		</view>
 	</view>
 </template>

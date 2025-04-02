@@ -2,6 +2,7 @@
 /smart-traffic-server/dist
 /smart-traffic-server/node_modules
 /smart-traffic-server/build
+/smart-traffic-mini-programs/node_modules
 
 # Logs
 logs
