@@ -1,0 +1,1 @@
+<map style="width:100vw;height:100vh" zIndex="{{10}}" latitude="{{a}}" longitude="{{b}}" markers="{{c}}"></map><wd-floating-panel wx:if="{{f}}" style="z-index:100" bindheightChange="{{d}}" u-i="66667b1d-0" bind:__l="__l" bindupdateHeight="{{e}}" u-p="{{f}}"></wd-floating-panel>

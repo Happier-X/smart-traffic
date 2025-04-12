@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "公交查询",
+  "usingComponents": {
+    "wd-floating-panel": "../../node-modules/wot-design-uni/components/wd-floating-panel/wd-floating-panel"
+  }
+}

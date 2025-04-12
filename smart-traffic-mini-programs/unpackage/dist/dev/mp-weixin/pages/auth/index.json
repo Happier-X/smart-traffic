@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "uni-app",
+  "usingComponents": {
+    "wd-tab": "../../node-modules/wot-design-uni/components/wd-tab/wd-tab",
+    "wd-tabs": "../../node-modules/wot-design-uni/components/wd-tabs/wd-tabs",
+    "wd-input": "../../node-modules/wot-design-uni/components/wd-input/wd-input",
+    "wd-cell-group": "../../node-modules/wot-design-uni/components/wd-cell-group/wd-cell-group",
+    "wd-button": "../../node-modules/wot-design-uni/components/wd-button/wd-button",
+    "wd-form": "../../node-modules/wot-design-uni/components/wd-form/wd-form"
+  }
+}

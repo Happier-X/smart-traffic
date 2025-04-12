@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/auth/index",
+    "pages/index/index",
+    "pages/bus/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "为了更好的为用户服务"
+    }
+  },
+  "usingComponents": {}
+}

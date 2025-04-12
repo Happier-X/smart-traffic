@@ -1,0 +1,1 @@
+<view class="content"><image class="logo" src="{{a}}"></image><view class="text-area"><text class="title">{{b}}</text><wd-button u-s="{{['d']}}" u-i="9044e322-0" bind:__l="__l">主要按钮</wd-button></view></view>

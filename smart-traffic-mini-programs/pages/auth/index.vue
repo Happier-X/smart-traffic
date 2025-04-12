@@ -127,6 +127,9 @@ const handleSubmit = () => {
             icon: "success",
           });
           // TODO: 调用登录API
+          uni.navigateTo({
+            url: "/pages/bus/index",
+          });
         } else {
           // 注册逻辑
           uni.showToast({
