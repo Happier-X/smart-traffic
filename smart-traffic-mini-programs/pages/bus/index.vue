@@ -5,6 +5,7 @@
     :latitude="userLatitude"
     :longitude="userLongitude"
     :markers="markers"
+    :show-location="true"
   ></map>
   <wd-floating-panel
     style="z-index: 100"
@@ -12,6 +13,7 @@
     :anchors="anchors"
     @heightChange="handleHeightChange"
   >
+  123
   </wd-floating-panel>
 </template>
 <script setup>
