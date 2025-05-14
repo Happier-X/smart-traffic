@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // 搜索历史记录
+  searchHistories SearchHistory[]
+  
+  @@map("users")
+}
+
+// 搜索历史记录模型
+model SearchHistory {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  query     String
+  type      String   // 搜索类型: 'bus' 或 'parking'
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // 关联用户
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("search_histories")
+}
+
+// 公交线路模型
+model BusRoute {
+  id           Int      @id @default(autoincrement())
+  number       String   // 公交线路号
+  startStation String   @map("start_station")
+  endStation   String   @map("end_station")
+  startTime    String   @map("start_time")  // 运营开始时间
+  endTime      String   @map("end_time")    // 运营结束时间
+  price        Decimal  @db.Decimal(10, 2)  // 票价
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  
+  // 公交站点
+  stations     BusStation[]
+  
+  @@map("bus_routes")
+}
+
+// 公交站点模型
+model BusStation {
+  id         Int      @id @default(autoincrement())
+  name       String   // 站点名称
+  latitude   String   // 纬度
+  longitude  String   // 经度
+  order      Int      // 站点顺序
+  routeId    Int      @map("route_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  
+  // 关联公交线路
+  route      BusRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  
+  @@map("bus_stations")
+}
+
+// 停车场模型
+model ParkingLot {
+  id              Int      @id @default(autoincrement())
+  name            String   // 停车场名称
+  address         String   // 地址
+  latitude        String   // 纬度
+  longitude       String   // 经度
+  totalSpaces     Int      @map("total_spaces")  // 总车位数
+  availableSpaces Int      @map("available_spaces")  // 可用车位数
+  price           Decimal  @db.Decimal(10, 2)  // 每小时价格
+  status          String   // 状态：空闲、适中、拥挤、已满
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  @@map("parking_lots")
+}
