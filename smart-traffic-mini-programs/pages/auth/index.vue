@@ -115,28 +115,64 @@ const handleSubmit = () => {
     activeTab.value === 0
       ? ["username", "password"]
       : ["username", "password", "confirmPassword"];
-
   formRef.value
     .validate(validateFields)
     .then((valid) => {
       if (valid) {
         if (activeTab.value === 0) {
           // 登录逻辑
-          uni.showToast({
-            title: "登录成功",
-            icon: "success",
-          });
-          // TODO: 调用登录API
-          uni.navigateTo({
-            url: "/pages/bus/index",
+          import('@/api/auth').then(({ login }) => {
+            login({
+              username: formData.username,
+              password: formData.password
+            })
+            .then(res => {
+              // 保存token
+              uni.setStorageSync('token', res.token);
+              
+              uni.showToast({
+                title: "登录成功",
+                icon: "success",
+              });
+              
+              // 跳转到主页
+              uni.navigateTo({
+                url: "/pages/index/index",
+              });
+            })
+            .catch(err => {
+              uni.showToast({
+                title: err.message || "登录失败",
+                icon: "none",
+              });
+            });
           });
         } else {
           // 注册逻辑
-          uni.showToast({
-            title: "注册成功",
-            icon: "success",
+          import('@/api/auth').then(({ register }) => {
+            register({
+              username: formData.username,
+              password: formData.password
+            })
+            .then(res => {
+              // 保存token
+              uni.setStorageSync('token', res.token);
+              
+              uni.showToast({
+                title: "注册成功",
+                icon: "success",
+              });
+              
+              // 注册成功后切换到登录页或直接登录
+              activeTab.value = 0;
+            })
+            .catch(err => {
+              uni.showToast({
+                title: err.message || "注册失败",
+                icon: "none",
+              });
+            });
           });
-          // TODO: 调用注册API
         }
       }
     })

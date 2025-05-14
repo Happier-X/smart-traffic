@@ -1,12 +1,7 @@
-import { IsNotEmpty, IsString, IsNumber, IsDecimal, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsIn } from 'class-validator';
 
-// 停车场状态枚举
-enum ParkingStatus {
-  FREE = '空闲',
-  MEDIUM = '适中',
-  BUSY = '拥挤',
-  FULL = '已满',
-}
+// 停车场状态列表
+const PARKING_STATUSES = ['free', 'medium', 'busy', 'full'];
 
 /**
  * 创建停车场DTO
@@ -39,10 +34,9 @@ export class CreateParkingLotDto {
   availableSpaces: number;
 
   @IsNotEmpty({ message: '价格不能为空' })
-  @IsDecimal({}, { message: '价格必须是有效的十进制数字' })
-  price: number;
+  price: number | string;
 
   @IsNotEmpty({ message: '状态不能为空' })
-  @IsEnum(ParkingStatus, { message: '状态必须是有效的枚举值' })
-  status: ParkingStatus;
+  @IsIn(PARKING_STATUSES, { message: '状态必须是有效值：free、medium、busy、full' })
+  status: string;
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBusRouteDto } from './dto/create-bus-route.dto';
+import { CreateBusStationDto } from './dto/create-bus-station.dto';
 
 /**
  * 公交服务
@@ -113,8 +114,7 @@ export class BusService {
    * @param userId 用户ID
    * @param limit 限制数量
    * @returns 用户的搜索历史列表
-   */
-  async getUserSearchHistory(userId: number, limit = 10) {
+   */  async getUserSearchHistory(userId: number, limit = 10) {
     return this.prisma.searchHistory.findMany({
       where: {
         userId,
@@ -124,6 +124,24 @@ export class BusService {
         createdAt: 'desc',
       },
       take: limit,
+    });
+  }
+
+  /**
+   * 创建公交站点
+   * 
+   * @param createBusStationDto 站点信息
+   * @returns 创建的站点
+   */
+  async createStation(createBusStationDto: CreateBusStationDto) {
+    return this.prisma.busStation.create({
+      data: {
+        name: createBusStationDto.name,
+        latitude: createBusStationDto.latitude,
+        longitude: createBusStationDto.longitude,
+        order: createBusStationDto.order,
+        routeId: createBusStationDto.routeId,
+      },
     });
   }
 }

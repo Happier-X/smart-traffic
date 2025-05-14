@@ -1,38 +1,36 @@
+"use strict";
+const common_vendor = require("../common/vendor.js");
 const TOKEN_KEY = "token";
-export const BASE_URL = "http://localhost:3005/api";
-const REQUEST_TIMEOUT = 15000;
+const BASE_URL = "http://localhost:3005/api";
+const REQUEST_TIMEOUT = 15e3;
 const LOADING_DELAY = 50;
 let loadingTimer;
-
 function getURL(url) {
   if (!/https|http/.test(url)) {
     return url.startsWith("/") ? `${BASE_URL}${url}` : `${BASE_URL}/${url}`;
   }
   return url;
 }
-
 function requestInterceptor(config) {
-  const token = uni.getStorageSync(TOKEN_KEY);
+  const token = common_vendor.index.getStorageSync(TOKEN_KEY);
   if (token) {
     config.header.Authorization = `Bearer ${token}`;
   }
   return config;
 }
-
 function responseInterceptor(response) {
   if (response.statusCode === 401) {
-    uni.removeStorageSync(TOKEN_KEY);
-    uni.showToast({
+    common_vendor.index.removeStorageSync(TOKEN_KEY);
+    common_vendor.index.showToast({
       title: "登录过期，请重新登录",
-      icon: "none",
+      icon: "none"
     });
-    uni.navigateTo({
-      url: "/pages/auth/index",
+    common_vendor.index.navigateTo({
+      url: "/pages/auth/index"
     });
   }
   return response;
 }
-
 function request(options) {
   return new Promise((resolve, reject) => {
     let config = {
@@ -41,27 +39,23 @@ function request(options) {
       timeout: REQUEST_TIMEOUT,
       header: {
         "Content-Type": "application/json",
-        ...options.header,
-      },
+        ...options.header
+      }
     };
-
     config = requestInterceptor(config);
-
     loadingTimer = setTimeout(() => {
-      uni.showLoading({
-        title: "加载中",
+      common_vendor.index.showLoading({
+        title: "加载中"
       });
     }, LOADING_DELAY);
-
-    uni.request({
+    common_vendor.index.request({
       ...config,
       success: (res) => {
         clearTimeout(loadingTimer);
-        uni.hideLoading();
-
+        common_vendor.index.hideLoading();
         const response = responseInterceptor(res);
-        if (!response) return;
-
+        if (!response)
+          return;
         if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve(res.data);
         } else {
@@ -69,49 +63,31 @@ function request(options) {
           error.response = res;
           error.status = res.statusCode;
           reject(error);
-
-          uni.showToast({
+          common_vendor.index.showToast({
             title: res.data.message || "请求失败",
-            icon: "none",
+            icon: "none"
           });
         }
       },
       fail: (err) => {
         clearTimeout(loadingTimer);
-        uni.hideLoading();
-
+        common_vendor.index.hideLoading();
         const error = new Error(err.errMsg || "网络错误");
         error.original = err;
         reject(error);
-
-        uni.showToast({
+        common_vendor.index.showToast({
           title: "网络错误",
-          icon: "none",
+          icon: "none"
         });
       },
       complete: () => {
         clearTimeout(loadingTimer);
-      },
+      }
     });
   });
 }
-
-export const get = (params) => {
+const get = (params) => {
   return request({ ...params, method: "GET" });
 };
-
-export const post = (params) => {
-  return request({ ...params, method: "POST" });
-};
-
-export const put = (params) => {
-  return request({ ...params, method: "PUT" });
-};
-
-export const del = (params) => {
-  return request({ ...params, method: "DELETE" });
-};
-
-export const patch = (params) => {
-  return request({ ...params, method: "PATCH" });
-};
+exports.get = get;
+//# sourceMappingURL=../../.sourcemap/mp-weixin/utils/request.js.map

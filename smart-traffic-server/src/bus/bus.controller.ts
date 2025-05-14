@@ -11,6 +11,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BusService } from './bus.service';
 import { CreateBusRouteDto } from './dto/create-bus-route.dto';
+import { CreateBusStationDto } from './dto/create-bus-station.dto';
 
 /**
  * 公交控制器
@@ -77,9 +78,19 @@ export class BusController {
    * 
    * @param createBusRouteDto 公交路线信息
    * @returns 创建的公交路线
-   */
-  @Post()
+   */  @Post()
   async createRoute(@Body() createBusRouteDto: CreateBusRouteDto) {
     return this.busService.createRoute(createBusRouteDto);
+  }
+
+  /**
+   * 创建公交站点
+   * 
+   * @param createBusStationDto 公交站点信息
+   * @returns 创建的公交站点
+   */
+  @Post('station')
+  async createStation(@Body() createBusStationDto: CreateBusStationDto) {
+    return this.busService.createStation(createBusStationDto);
   }
 }

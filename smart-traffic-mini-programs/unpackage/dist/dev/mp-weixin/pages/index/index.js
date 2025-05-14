@@ -15,7 +15,7 @@ const _sfc_main = {
     const windowHeight = common_vendor.ref(0);
     const anchors = common_vendor.ref([]);
     const handleHeightChange = ({ height: height2 }) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:150", height2);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:149", height2);
     };
     const userLongitude = common_vendor.ref("116.95");
     const userLatitude = common_vendor.ref("35.59");
@@ -44,17 +44,32 @@ const _sfc_main = {
     const searchBus = () => {
       if (!searchText.value.trim())
         return;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:183", "搜索:", searchText.value);
-      if (!historySearches.value.includes(searchText.value)) {
-        historySearches.value.unshift(searchText.value);
-        if (historySearches.value.length > 10) {
-          historySearches.value.pop();
-        }
-      }
-      searchText.value = "";
+      "../../api/bus.js".then(({ searchBusRoutes }) => {
+        searchBusRoutes(searchText.value).then((res) => {
+          busRoutes.value = res;
+          if (!historySearches.value.includes(searchText.value)) {
+            historySearches.value.unshift(searchText.value);
+            if (historySearches.value.length > 10) {
+              historySearches.value.pop();
+            }
+          }
+        }).catch((err) => {
+          common_vendor.index.showToast({
+            title: err.message || "搜索失败",
+            icon: "none"
+          });
+        });
+      });
     };
     const selectRoute = (route) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:194", "选择线路:", route);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:204", "选择线路:", route);
+      "../../api/bus.js".then(({ getBusRouteById }) => {
+        getBusRouteById(route.id).then((routeDetail) => {
+          common_vendor.index.__f__("log", "at pages/index/index.vue:209", "线路详情:", routeDetail);
+        }).catch((err) => {
+          common_vendor.index.__f__("error", "at pages/index/index.vue:213", "获取线路详情失败:", err);
+        });
+      });
     };
     const useHistory = (text) => {
       searchText.value = text;
@@ -75,7 +90,7 @@ const _sfc_main = {
         totalSpaces: 120,
         price: "5.00",
         distance: "500m",
-        status: "空闲"
+        status: "free"
       },
       {
         id: 2,
@@ -87,7 +102,7 @@ const _sfc_main = {
         totalSpaces: 200,
         price: "6.00",
         distance: "1.2km",
-        status: "适中"
+        status: "medium"
       },
       {
         id: 3,
@@ -99,7 +114,7 @@ const _sfc_main = {
         totalSpaces: 80,
         price: "8.00",
         distance: "800m",
-        status: "拥挤"
+        status: "busy"
       },
       {
         id: 4,
@@ -111,7 +126,7 @@ const _sfc_main = {
         totalSpaces: 100,
         price: "3.00",
         distance: "300m",
-        status: "空闲"
+        status: "free"
       }
     ]);
     const switchTab = (tab) => {
@@ -125,17 +140,28 @@ const _sfc_main = {
     const searchParking = () => {
       if (!parkingSearchText.value.trim())
         return;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:275", "搜索停车场:", parkingSearchText.value);
-      const filteredParkingLots = parkingLots.value.filter(
-        (p) => p.name.includes(parkingSearchText.value) || p.address.includes(parkingSearchText.value)
-      );
-      updateParkingMarkers(filteredParkingLots);
+      "../../api/parking.js".then(({ searchParkingLots }) => {
+        searchParkingLots(parkingSearchText.value).then((res) => {
+          parkingLots.value = res;
+          updateParkingMarkers(parkingLots.value);
+        }).catch((err) => {
+          common_vendor.index.showToast({
+            title: err.message || "搜索失败",
+            icon: "none"
+          });
+        });
+      });
     };
     const selectParking = (parking) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:289", "选择停车场:", parking);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:314", "选择停车场:", parking);
       userLatitude.value = parking.latitude;
       userLongitude.value = parking.longitude;
       updateParkingMarkers([parking]);
+      "../../api/parking.js".then(({ getParkingLotById }) => {
+        getParkingLotById(parking.id).catch((err) => {
+          common_vendor.index.__f__("error", "at pages/index/index.vue:327", "获取停车场详情失败:", err);
+        });
+      });
     };
     const updateParkingMarkers = (lots = parkingLots.value) => {
       markers.value = lots.map((lot, index) => ({
@@ -166,6 +192,15 @@ const _sfc_main = {
         selectParking(parking);
       }
     };
+    const getStatusDisplayText = (status) => {
+      const statusMap = {
+        "free": "空闲",
+        "medium": "适中",
+        "busy": "拥挤",
+        "full": "已满"
+      };
+      return statusMap[status] || status;
+    };
     common_vendor.onLoad(() => {
       windowHeight.value = common_vendor.index.getSystemInfoSync().windowHeight;
       anchors.value = [
@@ -174,6 +209,36 @@ const _sfc_main = {
         Math.round(0.7 * windowHeight.value)
       ];
       height.value = anchors.value[1];
+      "../../api/bus.js".then(({ getAllBusRoutes }) => {
+        getAllBusRoutes().then((res) => {
+          if (res && res.length > 0) {
+            busRoutes.value = res;
+          }
+        }).catch((err) => {
+          common_vendor.index.__f__("error", "at pages/index/index.vue:392", "获取公交路线失败:", err);
+        });
+      });
+      "../../api/parking.js".then(({ getNearbyParkingLots }) => {
+        getNearbyParkingLots(userLatitude.value, userLongitude.value).then((res) => {
+          if (res && res.length > 0) {
+            parkingLots.value = res;
+          }
+        }).catch((err) => {
+          common_vendor.index.__f__("error", "at pages/index/index.vue:405", "获取附近停车场失败:", err);
+        });
+      });
+      const token = common_vendor.index.getStorageSync("token");
+      if (token) {
+        "../../api/bus.js".then(({ getBusSearchHistory }) => {
+          getBusSearchHistory().then((res) => {
+            if (res && res.length > 0) {
+              historySearches.value = res.map((item) => item.query);
+            }
+          }).catch((err) => {
+            common_vendor.index.__f__("error", "at pages/index/index.vue:420", "获取搜索历史失败:", err);
+          });
+        });
+      }
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -224,11 +289,11 @@ const _sfc_main = {
           return {
             a: common_vendor.t(parking.name),
             b: common_vendor.t(parking.distance),
-            c: common_vendor.t(parking.status),
-            d: parking.status === "空闲" ? 1 : "",
-            e: parking.status === "适中" ? 1 : "",
-            f: parking.status === "拥挤" ? 1 : "",
-            g: parking.status === "已满" ? 1 : "",
+            c: common_vendor.t(getStatusDisplayText(parking.status)),
+            d: parking.status === "free" ? 1 : "",
+            e: parking.status === "medium" ? 1 : "",
+            f: parking.status === "busy" ? 1 : "",
+            g: parking.status === "full" ? 1 : "",
             h: common_vendor.t(parking.address),
             i: common_vendor.t(parking.availableSpaces),
             j: common_vendor.t(parking.totalSpaces),

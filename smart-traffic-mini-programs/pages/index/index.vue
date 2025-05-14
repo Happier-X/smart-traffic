@@ -111,17 +111,16 @@
           <view class="parking-name">
             {{ parking.name }}
             <text class="parking-distance">{{ parking.distance }}</text>
-          </view>
-          <view
+          </view>          <view
             class="parking-status"
             :class="{
-              'status-free': parking.status === '空闲',
-              'status-medium': parking.status === '适中',
-              'status-busy': parking.status === '拥挤',
-              'status-full': parking.status === '已满',
+              'status-free': parking.status === 'free',
+              'status-medium': parking.status === 'medium',
+              'status-busy': parking.status === 'busy',
+              'status-full': parking.status === 'full',
             }"
           >
-            {{ parking.status }}
+            {{ getStatusDisplayText(parking.status) }}
           </view>
           <view class="parking-info">
             <view class="parking-address">{{ parking.address }}</view>
@@ -179,20 +178,41 @@ const historySearches = ref(["1路", "地铁2号线", "301路快线"]);
 // 公交查询相关方法
 const searchBus = () => {
   if (!searchText.value.trim()) return;
-  // 模拟搜索功能，实际项目中应调用API
-  console.log("搜索:", searchText.value);
-  // 添加到历史记录
-  if (!historySearches.value.includes(searchText.value)) {
-    historySearches.value.unshift(searchText.value);
-    if (historySearches.value.length > 10) {
-      historySearches.value.pop();
-    }
-  }
-  searchText.value = "";
+  
+  // 调用搜索公交路线API
+  import('@/api/bus').then(({ searchBusRoutes }) => {
+    searchBusRoutes(searchText.value)
+      .then(res => {
+        busRoutes.value = res;
+        // 添加到历史记录
+        if (!historySearches.value.includes(searchText.value)) {
+          historySearches.value.unshift(searchText.value);
+          if (historySearches.value.length > 10) {
+            historySearches.value.pop();
+          }
+        }
+      })
+      .catch(err => {
+        uni.showToast({
+          title: err.message || "搜索失败",
+          icon: "none",
+        });
+      });
+  });
 };
 const selectRoute = (route) => {
   console.log("选择线路:", route);
-  // 这里可以实现路线详情展示或在地图上显示路线
+  // 获取线路详情
+  import('@/api/bus').then(({ getBusRouteById }) => {
+    getBusRouteById(route.id)
+      .then(routeDetail => {
+        console.log("线路详情:", routeDetail);
+        // 这里可以实现路线详情展示或在地图上显示路线
+      })
+      .catch(err => {
+        console.error("获取线路详情失败:", err);
+      });
+  });
 };
 const useHistory = (text) => {
   searchText.value = text;
@@ -215,7 +235,7 @@ const parkingLots = ref([
     totalSpaces: 120,
     price: "5.00",
     distance: "500m",
-    status: "空闲",
+    status: "free",
   },
   {
     id: 2,
@@ -227,7 +247,7 @@ const parkingLots = ref([
     totalSpaces: 200,
     price: "6.00",
     distance: "1.2km",
-    status: "适中",
+    status: "medium",
   },
   {
     id: 3,
@@ -239,7 +259,7 @@ const parkingLots = ref([
     totalSpaces: 80,
     price: "8.00",
     distance: "800m",
-    status: "拥挤",
+    status: "busy",
   },
   {
     id: 4,
@@ -251,7 +271,7 @@ const parkingLots = ref([
     totalSpaces: 100,
     price: "3.00",
     distance: "300m",
-    status: "空闲",
+    status: "free",
   },
 ]);
 
@@ -271,17 +291,22 @@ const switchTab = (tab) => {
 // 停车场查询相关方法
 const searchParking = () => {
   if (!parkingSearchText.value.trim()) return;
-  // 模拟搜索功能，实际项目中应调用API
-  console.log("搜索停车场:", parkingSearchText.value);
-  // 简单模拟：根据输入筛选停车场
-  const filteredParkingLots = parkingLots.value.filter(
-    (p) =>
-      p.name.includes(parkingSearchText.value) ||
-      p.address.includes(parkingSearchText.value)
-  );
-
-  // 更新地图标记只显示筛选后的停车场
-  updateParkingMarkers(filteredParkingLots);
+  
+  // 调用停车场搜索API
+  import('@/api/parking').then(({ searchParkingLots }) => {
+    searchParkingLots(parkingSearchText.value)
+      .then(res => {
+        parkingLots.value = res;
+        // 更新地图标记显示查询结果
+        updateParkingMarkers(parkingLots.value);
+      })
+      .catch(err => {
+        uni.showToast({
+          title: err.message || "搜索失败",
+          icon: "none",
+        });
+      });
+  });
 };
 
 // 选择停车场
@@ -294,6 +319,14 @@ const selectParking = (parking) => {
 
   // 更新标记，突出显示选中的停车场
   updateParkingMarkers([parking]);
+  
+  // 获取停车场详情
+  import('@/api/parking').then(({ getParkingLotById }) => {
+    getParkingLotById(parking.id)
+      .catch(err => {
+        console.error("获取停车场详情失败:", err);
+      });
+  });
 };
 
 // 更新地图上的停车场标记
@@ -327,6 +360,17 @@ const handleMarkerTap = (e) => {
   }
 };
 
+// 获取状态显示文本
+const getStatusDisplayText = (status) => {
+  const statusMap = {
+    'free': '空闲',
+    'medium': '适中',
+    'busy': '拥挤',
+    'full': '已满'
+  };
+  return statusMap[status] || status;
+};
+
 onLoad(() => {
   windowHeight.value = uni.getSystemInfoSync().windowHeight;
   anchors.value = [
@@ -335,6 +379,48 @@ onLoad(() => {
     Math.round(0.7 * windowHeight.value),
   ];
   height.value = anchors.value[1];
+  
+  // 获取公交路线数据
+  import('@/api/bus').then(({ getAllBusRoutes }) => {
+    getAllBusRoutes()
+      .then(res => {
+        if (res && res.length > 0) {
+          busRoutes.value = res;
+        }
+      })
+      .catch(err => {
+        console.error("获取公交路线失败:", err);
+      });
+  });
+  
+  // 获取附近停车场数据
+  import('@/api/parking').then(({ getNearbyParkingLots }) => {
+    getNearbyParkingLots(userLatitude.value, userLongitude.value)
+      .then(res => {
+        if (res && res.length > 0) {
+          parkingLots.value = res;
+        }
+      })
+      .catch(err => {
+        console.error("获取附近停车场失败:", err);
+      });
+  });
+  
+  // 获取搜索历史
+  const token = uni.getStorageSync('token');
+  if (token) {
+    import('@/api/bus').then(({ getBusSearchHistory }) => {
+      getBusSearchHistory()
+        .then(res => {
+          if (res && res.length > 0) {
+            historySearches.value = res.map(item => item.query);
+          }
+        })
+        .catch(err => {
+          console.error("获取搜索历史失败:", err);
+        });
+    });
+  }
 });
 </script>
 <style scoped>
