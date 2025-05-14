@@ -1,6 +1,5 @@
 {
   "pages": [
-    "pages/auth/index",
     "pages/index/index",
     "pages/bus/index"
   ],

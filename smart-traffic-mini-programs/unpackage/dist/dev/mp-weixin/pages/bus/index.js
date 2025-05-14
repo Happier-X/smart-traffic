@@ -15,37 +15,70 @@ const _sfc_main = {
     const windowHeight = common_vendor.ref(0);
     const anchors = common_vendor.ref([]);
     const handleHeightChange = ({ height: height2 }) => {
-      common_vendor.index.__f__("log", "at pages/bus/index.vue:25", height2);
+      common_vendor.index.__f__("log", "at pages/bus/index.vue:72", height2);
     };
-    const userLongitude = common_vendor.ref(0);
-    const userLatitude = common_vendor.ref(0);
+    const userLongitude = common_vendor.ref("116.95");
+    const userLatitude = common_vendor.ref("35.59");
     const markers = common_vendor.ref([]);
-    function getLocation() {
-      common_vendor.index.authorize({
-        scope: "scope.userLocation",
-        success() {
-          common_vendor.index.getLocation({
-            type: "gcj02",
-            success: (res) => {
-              userLatitude.value = res.latitude;
-              userLongitude.value = res.longitude;
-              markers.value = [
-                {
-                  id: 0,
-                  latitude: res.latitude,
-                  longitude: res.longitude,
-                  //   iconPath: "/static/location-icon.svg",
-                  width: 50,
-                  height: 50
-                }
-              ];
-            }
-          });
+    const searchText = common_vendor.ref("");
+    const busRoutes = common_vendor.ref([
+      {
+        number: "1路",
+        startStation: "火车站",
+        endStation: "曲师大",
+        startTime: "06:00",
+        endTime: "22:00",
+        price: "2.00"
+      },
+      {
+        number: "2路",
+        startStation: "曲师大",
+        endStation: "高铁站",
+        startTime: "05:30",
+        endTime: "23:00",
+        price: "2.00"
+      }
+      // {
+      //   number: "32路",
+      //   startStation: "南山区",
+      //   endStation: "科技园",
+      //   startTime: "06:30",
+      //   endTime: "21:30",
+      //   price: "2.00",
+      // },
+      // {
+      //   number: "301路",
+      //   startStation: "机场",
+      //   endStation: "市中心",
+      //   startTime: "05:00",
+      //   endTime: "24:00",
+      //   price: "3.50",
+      // },
+    ]);
+    const historySearches = common_vendor.ref(["1路", "地铁2号线", "301路快线"]);
+    const searchBus = () => {
+      if (!searchText.value.trim())
+        return;
+      common_vendor.index.__f__("log", "at pages/bus/index.vue:121", "搜索:", searchText.value);
+      if (!historySearches.value.includes(searchText.value)) {
+        historySearches.value.unshift(searchText.value);
+        if (historySearches.value.length > 10) {
+          historySearches.value.pop();
         }
-      });
-    }
+      }
+      searchText.value = "";
+    };
+    const selectRoute = (route) => {
+      common_vendor.index.__f__("log", "at pages/bus/index.vue:135", "选择线路:", route);
+    };
+    const useHistory = (text) => {
+      searchText.value = text;
+      searchBus();
+    };
+    const removeHistory = (index) => {
+      historySearches.value.splice(index, 1);
+    };
     common_vendor.onLoad(() => {
-      getLocation();
       windowHeight.value = common_vendor.index.getSystemInfoSync().windowHeight;
       anchors.value = [
         100,
@@ -55,19 +88,48 @@ const _sfc_main = {
       height.value = anchors.value[1];
     });
     return (_ctx, _cache) => {
-      return {
+      return common_vendor.e({
         a: userLatitude.value,
         b: userLongitude.value,
         c: markers.value,
-        d: common_vendor.o(handleHeightChange),
-        e: common_vendor.o(($event) => height.value = $event),
-        f: common_vendor.p({
+        d: searchText.value,
+        e: common_vendor.o(($event) => searchText.value = $event.detail.value),
+        f: common_vendor.o(searchBus),
+        g: busRoutes.value.length > 0
+      }, busRoutes.value.length > 0 ? {
+        h: common_vendor.f(busRoutes.value, (route, index, i0) => {
+          return {
+            a: common_vendor.t(route.number),
+            b: common_vendor.t(route.startStation),
+            c: common_vendor.t(route.endStation),
+            d: common_vendor.t(route.startTime),
+            e: common_vendor.t(route.endTime),
+            f: common_vendor.t(route.price),
+            g: index,
+            h: common_vendor.o(($event) => selectRoute(route), index)
+          };
+        })
+      } : common_vendor.e({
+        i: common_vendor.f(historySearches.value, (item, index, i0) => {
+          return {
+            a: common_vendor.t(item),
+            b: common_vendor.o(($event) => removeHistory(index), index),
+            c: index,
+            d: common_vendor.o(($event) => useHistory(item), index)
+          };
+        }),
+        j: historySearches.value.length === 0
+      }, historySearches.value.length === 0 ? {} : {}), {
+        k: common_vendor.o(handleHeightChange),
+        l: common_vendor.o(($event) => height.value = $event),
+        m: common_vendor.p({
           anchors: anchors.value,
           height: height.value
         })
-      };
+      });
     };
   }
 };
-wx.createPage(_sfc_main);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-c29e4b4b"]]);
+wx.createPage(MiniProgramPage);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/bus/index.js.map

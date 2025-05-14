@@ -1,0 +1,102 @@
+
+.bus-search-container.data-v-c29e4b4b {
+  padding: 15px;
+  box-sizing: border-box;
+  height: 100%;
+  background-color: #fff;
+}
+.search-header.data-v-c29e4b4b {
+  margin-bottom: 15px;
+}
+.title.data-v-c29e4b4b {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.search-box.data-v-c29e4b4b {
+  display: flex;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.search-box input.data-v-c29e4b4b {
+  flex: 1;
+  height: 40px;
+  padding: 0 10px;
+  border: none;
+}
+.search-btn.data-v-c29e4b4b {
+  width: 80px;
+  height: 40px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+}
+.list-title.data-v-c29e4b4b {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 15px 0 10px 0;
+  color: #333;
+}
+.bus-item.data-v-c29e4b4b {
+  display: flex;
+  padding: 15px 10px;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+}
+.bus-number.data-v-c29e4b4b {
+  width: 60px;
+  height: 30px;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  font-weight: bold;
+}
+.bus-info.data-v-c29e4b4b {
+  flex: 1;
+}
+.bus-route.data-v-c29e4b4b {
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+.bus-time.data-v-c29e4b4b {
+  font-size: 12px;
+  color: #888;
+}
+.bus-price.data-v-c29e4b4b {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+.history-item.data-v-c29e4b4b {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 5px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.history-text.data-v-c29e4b4b {
+  color: #555;
+}
+.history-delete.data-v-c29e4b4b {
+  width: 20px;
+  height: 20px;
+  color: #999;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.empty-history.data-v-c29e4b4b {
+  text-align: center;
+  color: #999;
+  padding: 30px 0;
+  font-size: 14px;
+}
