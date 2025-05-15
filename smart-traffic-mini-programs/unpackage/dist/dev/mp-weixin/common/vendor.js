@@ -28,12 +28,12 @@ const hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
 const isArray$1 = Array.isArray;
 const isMap = (val) => toTypeString(val) === "[object Map]";
 const isSet = (val) => toTypeString(val) === "[object Set]";
-const isFunction = (val) => typeof val === "function";
+const isFunction$1 = (val) => typeof val === "function";
 const isString$1 = (val) => typeof val === "string";
 const isSymbol = (val) => typeof val === "symbol";
 const isObject = (val) => val !== null && typeof val === "object";
-const isPromise = (val) => {
-  return (isObject(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
+const isPromise$1 = (val) => {
+  return (isObject(val) || isFunction$1(val)) && isFunction$1(val.then) && isFunction$1(val.catch);
 };
 const objectToString = Object.prototype.toString;
 const toTypeString = (value) => objectToString.call(value);
@@ -139,7 +139,7 @@ function normalizeClass(value) {
   return res.trim();
 }
 const toDisplayString = (val) => {
-  return isString$1(val) ? val : val == null ? "" : isArray$1(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+  return isString$1(val) ? val : val == null ? "" : isArray$1(val) || isObject(val) && (val.toString === objectToString || !isFunction$1(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
 const replacer = (_key, val) => {
   if (val && val.__v_isRef) {
@@ -180,12 +180,12 @@ function include(str, parts) {
 function startsWith(str, parts) {
   return parts.find((part) => str.indexOf(part) === 0);
 }
-function normalizeLocale(locale, messages) {
+function normalizeLocale(locale, messages2) {
   if (!locale) {
     return;
   }
   locale = locale.trim().replace(/_/g, "-");
-  if (messages && messages[locale]) {
+  if (messages2 && messages2[locale]) {
     return locale;
   }
   locale = locale.toLowerCase();
@@ -205,12 +205,12 @@ function normalizeLocale(locale, messages) {
     return LOCALE_ZH_HANS;
   }
   let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
-  if (messages && Object.keys(messages).length > 0) {
-    locales = Object.keys(messages);
+  if (messages2 && Object.keys(messages2).length > 0) {
+    locales = Object.keys(messages2);
   }
-  const lang = startsWith(locale, locales);
-  if (lang) {
-    return lang;
+  const lang2 = startsWith(locale, locales);
+  if (lang2) {
+    return lang2;
   }
 }
 const SLOT_DEFAULT_NAME = "d";
@@ -298,8 +298,8 @@ const customizeRE = /:/g;
 function customizeEvent(str) {
   return camelize(str.replace(customizeRE, "-"));
 }
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
+const encode$1 = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode$1) {
   const res = obj ? Object.keys(obj).map((key) => {
     let val = obj[key];
     if (typeof val === void 0 || val === null) {
@@ -374,7 +374,7 @@ const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /* @__PURE__ */ (() => {
   };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
-  if (checkType && !isFunction(value)) {
+  if (checkType && !isFunction$1(value)) {
     return false;
   }
   if (UniLifecycleHooks.indexOf(name) > -1) {
@@ -1398,7 +1398,7 @@ getter: `, this.getter);
 function computed$1(getterOrOptions, debugOptions, isSSR = false) {
   let getter;
   let setter;
-  const onlyGetter = isFunction(getterOrOptions);
+  const onlyGetter = isFunction$1(getterOrOptions);
   if (onlyGetter) {
     getter = getterOrOptions;
     setter = () => {
@@ -1601,7 +1601,7 @@ function formatProp(key, value, raw) {
   } else if (isRef(value)) {
     value = formatProp(key, toRaw(value.value), true);
     return raw ? value : [`${key}=Ref<`, value, `>`];
-  } else if (isFunction(value)) {
+  } else if (isFunction$1(value)) {
     return [`${key}=fn${value.name ? `<${value.name}>` : ``}`];
   } else {
     value = toRaw(value);
@@ -1647,9 +1647,9 @@ function callWithErrorHandling(fn, instance, type, args) {
   }
 }
 function callWithAsyncErrorHandling(fn, instance, type, args) {
-  if (isFunction(fn)) {
+  if (isFunction$1(fn)) {
     const res = callWithErrorHandling(fn, instance, type, args);
-    if (res && isPromise(res)) {
+    if (res && isPromise$1(res)) {
       res.catch((err) => {
         handleError(err, instance, type);
       });
@@ -2000,7 +2000,7 @@ function emit(instance, event, ...rawArgs) {
         }
       } else {
         const validator = emitsOptions[event];
-        if (isFunction(validator)) {
+        if (isFunction$1(validator)) {
           const isValid = validator(...rawArgs);
           if (!isValid) {
             warn$1(
@@ -2079,7 +2079,7 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
   const raw = comp.emits;
   let normalized = {};
   let hasExtends = false;
-  if (!isFunction(comp)) {
+  if (!isFunction$1(comp)) {
     const extendEmits = (raw2) => {
       const normalizedFromExtend = normalizeEmitsOptions(raw2, appContext, true);
       if (normalizedFromExtend) {
@@ -2170,7 +2170,7 @@ function resolve(registry, name) {
 }
 const INITIAL_WATCHER_VALUE = {};
 function watch(source, cb, options) {
-  if (!isFunction(cb)) {
+  if (!isFunction$1(cb)) {
     warn$1(
       `\`watch(fn, options?)\` signature has been moved to a separate API. Use \`watchEffect(fn, options?)\` instead. \`watch\` now only supports \`watch(source, cb, options?) signature.`
     );
@@ -2243,13 +2243,13 @@ function doWatch(source, cb, {
         return s2.value;
       } else if (isReactive(s2)) {
         return reactiveGetter(s2);
-      } else if (isFunction(s2)) {
+      } else if (isFunction$1(s2)) {
         return callWithErrorHandling(s2, instance, 2);
       } else {
         warnInvalidSource(s2);
       }
     });
-  } else if (isFunction(source)) {
+  } else if (isFunction$1(source)) {
     if (cb) {
       getter = () => callWithErrorHandling(source, instance, 2);
     } else {
@@ -2347,7 +2347,7 @@ function instanceWatch(source, value, options) {
   const publicThis = this.proxy;
   const getter = isString$1(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
   let cb;
-  if (isFunction(value)) {
+  if (isFunction$1(value)) {
     cb = value;
   } else {
     cb = value.handler;
@@ -2429,25 +2429,25 @@ function createAppContext() {
 let uid$1 = 0;
 function createAppAPI(render, hydrate) {
   return function createApp2(rootComponent, rootProps = null) {
-    if (!isFunction(rootComponent)) {
+    if (!isFunction$1(rootComponent)) {
       rootComponent = extend({}, rootComponent);
     }
     if (rootProps != null && !isObject(rootProps)) {
       warn$1(`root props passed to app.mount() must be an object.`);
       rootProps = null;
     }
-    const context = createAppContext();
+    const context2 = createAppContext();
     const installedPlugins = /* @__PURE__ */ new WeakSet();
-    const app = context.app = {
+    const app = context2.app = {
       _uid: uid$1++,
       _component: rootComponent,
       _props: rootProps,
       _container: null,
-      _context: context,
+      _context: context2,
       _instance: null,
       version,
       get config() {
-        return context.config;
+        return context2.config;
       },
       set config(v) {
         {
@@ -2459,10 +2459,10 @@ function createAppAPI(render, hydrate) {
       use(plugin2, ...options) {
         if (installedPlugins.has(plugin2)) {
           warn$1(`Plugin has already been applied to target app.`);
-        } else if (plugin2 && isFunction(plugin2.install)) {
+        } else if (plugin2 && isFunction$1(plugin2.install)) {
           installedPlugins.add(plugin2);
           plugin2.install(app, ...options);
-        } else if (isFunction(plugin2)) {
+        } else if (isFunction$1(plugin2)) {
           installedPlugins.add(plugin2);
           plugin2(app, ...options);
         } else {
@@ -2474,8 +2474,8 @@ function createAppAPI(render, hydrate) {
       },
       mixin(mixin) {
         {
-          if (!context.mixins.includes(mixin)) {
-            context.mixins.push(mixin);
+          if (!context2.mixins.includes(mixin)) {
+            context2.mixins.push(mixin);
           } else {
             warn$1(
               "Mixin has already been applied to target app" + (mixin.name ? `: ${mixin.name}` : "")
@@ -2486,15 +2486,15 @@ function createAppAPI(render, hydrate) {
       },
       component(name, component) {
         {
-          validateComponentName(name, context.config);
+          validateComponentName(name, context2.config);
         }
         if (!component) {
-          return context.components[name];
+          return context2.components[name];
         }
-        if (context.components[name]) {
+        if (context2.components[name]) {
           warn$1(`Component "${name}" has already been registered in target app.`);
         }
-        context.components[name] = component;
+        context2.components[name] = component;
         return app;
       },
       directive(name, directive) {
@@ -2502,12 +2502,12 @@ function createAppAPI(render, hydrate) {
           validateDirectiveName(name);
         }
         if (!directive) {
-          return context.directives[name];
+          return context2.directives[name];
         }
-        if (context.directives[name]) {
+        if (context2.directives[name]) {
           warn$1(`Directive "${name}" has already been registered in target app.`);
         }
-        context.directives[name] = directive;
+        context2.directives[name] = directive;
         return app;
       },
       // fixed by xxxxxx
@@ -2517,12 +2517,12 @@ function createAppAPI(render, hydrate) {
       unmount() {
       },
       provide(key, value) {
-        if (key in context.provides) {
+        if (key in context2.provides) {
           warn$1(
             `App already provides property with key "${String(key)}". It will be overwritten with the new value.`
           );
         }
-        context.provides[key] = value;
+        context2.provides[key] = value;
         return app;
       },
       runWithContext(fn) {
@@ -2563,7 +2563,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
     if (provides && key in provides) {
       return provides[key];
     } else if (arguments.length > 1) {
-      return treatDefaultAsFactory && isFunction(defaultValue) ? defaultValue.call(instance && instance.proxy) : defaultValue;
+      return treatDefaultAsFactory && isFunction$1(defaultValue) ? defaultValue.call(instance && instance.proxy) : defaultValue;
     } else {
       warn$1(`injection "${String(key)}" not found.`);
     }
@@ -2574,7 +2574,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
 function defineComponent(options, extraOptions) {
-  return isFunction(options) ? (
+  return isFunction$1(options) ? (
     // #8326: extend call and options.name access are considered side-effects
     // by Rollup, so we have to wrap it in a pure-annotated IIFE.
     /* @__PURE__ */ (() => extend({ name: options.name }, extraOptions, { setup: options }))()
@@ -2899,6 +2899,16 @@ function exposeSetupStateOnRenderContext(instance) {
     }
   });
 }
+function useSlots() {
+  return getContext().slots;
+}
+function getContext() {
+  const i = getCurrentInstance();
+  if (!i) {
+    warn$1(`useContext() called without active instance.`);
+  }
+  return i.setupContext || (i.setupContext = createSetupContext(i));
+}
 function normalizePropsOrEmits(props) {
   return isArray$1(props) ? props.reduce(
     (normalized, p2) => (normalized[p2] = null, normalized),
@@ -2977,7 +2987,7 @@ function applyOptions$1(instance) {
   if (methods) {
     for (const key in methods) {
       const methodHandler = methods[key];
-      if (isFunction(methodHandler)) {
+      if (isFunction$1(methodHandler)) {
         {
           Object.defineProperty(ctx, key, {
             value: methodHandler.bind(publicThis),
@@ -2997,13 +3007,13 @@ function applyOptions$1(instance) {
     }
   }
   if (dataOptions) {
-    if (!isFunction(dataOptions)) {
+    if (!isFunction$1(dataOptions)) {
       warn$1(
         `The data option must be a function. Plain object usage is no longer supported.`
       );
     }
     const data = dataOptions.call(publicThis, publicThis);
-    if (isPromise(data)) {
+    if (isPromise$1(data)) {
       warn$1(
         `data() returned a Promise - note data() cannot be async; If you intend to perform data fetching before component renders, use async setup() + <Suspense>.`
       );
@@ -3031,11 +3041,11 @@ function applyOptions$1(instance) {
   if (computedOptions) {
     for (const key in computedOptions) {
       const opt = computedOptions[key];
-      const get2 = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
+      const get2 = isFunction$1(opt) ? opt.bind(publicThis, publicThis) : isFunction$1(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
       if (get2 === NOOP) {
         warn$1(`Computed property "${key}" has no getter.`);
       }
-      const set2 = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : () => {
+      const set2 = !isFunction$1(opt) && isFunction$1(opt.set) ? opt.set.bind(publicThis) : () => {
         warn$1(
           `Write operation failed: computed property "${key}" is readonly.`
         );
@@ -3062,7 +3072,7 @@ function applyOptions$1(instance) {
   }
   function initProvides() {
     if (provideOptions) {
-      const provides = isFunction(provideOptions) ? provideOptions.call(publicThis) : provideOptions;
+      const provides = isFunction$1(provideOptions) ? provideOptions.call(publicThis) : provideOptions;
       Reflect.ownKeys(provides).forEach((key) => {
         provide(key, provides[key]);
       });
@@ -3168,19 +3178,19 @@ function createWatcher(raw, ctx, publicThis, key) {
   const getter = key.includes(".") ? createPathGetter(publicThis, key) : () => publicThis[key];
   if (isString$1(raw)) {
     const handler = ctx[raw];
-    if (isFunction(handler)) {
+    if (isFunction$1(handler)) {
       watch(getter, handler);
     } else {
       warn$1(`Invalid watch handler specified by key "${raw}"`, handler);
     }
-  } else if (isFunction(raw)) {
+  } else if (isFunction$1(raw)) {
     watch(getter, raw.bind(publicThis));
   } else if (isObject(raw)) {
     if (isArray$1(raw)) {
       raw.forEach((r2) => createWatcher(r2, ctx, publicThis, key));
     } else {
-      const handler = isFunction(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
-      if (isFunction(handler)) {
+      const handler = isFunction$1(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
+      if (isFunction$1(handler)) {
         watch(getter, handler, raw);
       } else {
         warn$1(`Invalid watch handler specified by key "${raw.handler}"`, handler);
@@ -3282,8 +3292,8 @@ function mergeDataFn(to, from) {
   }
   return function mergedDataFn() {
     return extend(
-      isFunction(to) ? to.call(this, this) : to,
-      isFunction(from) ? from.call(this, this) : from
+      isFunction$1(to) ? to.call(this, this) : to,
+      isFunction$1(from) ? from.call(this, this) : from
     );
   };
 }
@@ -3497,7 +3507,7 @@ function resolvePropValue$1(options, props, key, value, instance, isAbsent) {
     const hasDefault = hasOwn(opt, "default");
     if (hasDefault && value === void 0) {
       const defaultValue = opt.default;
-      if (opt.type !== Function && !opt.skipFactory && isFunction(defaultValue)) {
+      if (opt.type !== Function && !opt.skipFactory && isFunction$1(defaultValue)) {
         const { propsDefaults } = instance;
         if (key in propsDefaults) {
           value = propsDefaults[key];
@@ -3539,7 +3549,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
   const normalized = {};
   const needCastKeys = [];
   let hasExtends = false;
-  if (!isFunction(comp)) {
+  if (!isFunction$1(comp)) {
     const extendProps = (raw2) => {
       hasExtends = true;
       const [props, keys] = normalizePropsOptions(raw2, appContext, true);
@@ -3581,7 +3591,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
       const normalizedKey = camelize(key);
       if (validatePropName(normalizedKey)) {
         const opt = raw[key];
-        const prop = normalized[normalizedKey] = isArray$1(opt) || isFunction(opt) ? { type: opt } : extend({}, opt);
+        const prop = normalized[normalizedKey] = isArray$1(opt) || isFunction$1(opt) ? { type: opt } : extend({}, opt);
         if (prop) {
           const booleanIndex = getTypeIndex(Boolean, prop.type);
           const stringIndex = getTypeIndex(String, prop.type);
@@ -3632,7 +3642,7 @@ function isSameType(a, b) {
 function getTypeIndex(type, expectedTypes) {
   if (isArray$1(expectedTypes)) {
     return expectedTypes.findIndex((t2) => isSameType(t2, type));
-  } else if (isFunction(expectedTypes)) {
+  } else if (isFunction$1(expectedTypes)) {
     return isSameType(expectedTypes, type) ? 0 : -1;
   }
   return -1;
@@ -3784,7 +3794,7 @@ const Fragment = Symbol.for("v-fgt");
 const Text = Symbol.for("v-txt");
 const Comment = Symbol.for("v-cmt");
 const Static = Symbol.for("v-stc");
-function isVNode(value) {
+function isVNode$1(value) {
   return value ? value.__v_isVNode === true : false;
 }
 const InternalObjectKey = `__vInternal`;
@@ -3984,7 +3994,7 @@ function setupStatefulComponent(instance, isSSR) {
     );
     resetTracking();
     reset();
-    if (isPromise(setupResult)) {
+    if (isPromise$1(setupResult)) {
       setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
       {
         warn$1(
@@ -3999,12 +4009,12 @@ function setupStatefulComponent(instance, isSSR) {
   }
 }
 function handleSetupResult(instance, setupResult, isSSR) {
-  if (isFunction(setupResult)) {
+  if (isFunction$1(setupResult)) {
     {
       instance.render = setupResult;
     }
   } else if (isObject(setupResult)) {
-    if (isVNode(setupResult)) {
+    if (isVNode$1(setupResult)) {
       warn$1(
         `setup() should not return VNodes directly - return a render function instead.`
       );
@@ -4134,7 +4144,7 @@ function getExposeProxy(instance) {
 const classifyRE = /(?:^|[-_])(\w)/g;
 const classify = (str) => str.replace(classifyRE, (c2) => c2.toUpperCase()).replace(/[-_]/g, "");
 function getComponentName(Component2, includeInferred = true) {
-  return isFunction(Component2) ? Component2.displayName || Component2.name : Component2.name || includeInferred && Component2.__name;
+  return isFunction$1(Component2) ? Component2.displayName || Component2.name : Component2.name || includeInferred && Component2.__name;
 }
 function formatComponentName(instance, Component2, isRoot = false) {
   let name = getComponentName(Component2);
@@ -4512,7 +4522,7 @@ function findComponentPublicInstance(mpComponents, id) {
   return null;
 }
 function setTemplateRef({ r: r2, f: f2 }, refValue, setupState) {
-  if (isFunction(r2)) {
+  if (isFunction$1(r2)) {
     r2(refValue, {});
   } else {
     const _isString = isString$1(r2);
@@ -4887,7 +4897,7 @@ function createVueApp(rootComponent, rootProps = null) {
   return app;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
-  if (isFunction(hook)) {
+  if (isFunction$1(hook)) {
     injectHook(name, hook.bind(publicThis), instance);
   }
 }
@@ -5130,7 +5140,7 @@ function createInvoker(initialValue, instance) {
       setTimeout(invoke);
     } else {
       const res = invoke();
-      if (e2.type === "input" && (isArray$1(res) || isPromise(res))) {
+      if (e2.type === "input" && (isArray$1(res) || isPromise$1(res))) {
         return;
       }
       return res;
@@ -5218,6 +5228,10 @@ function vFor(source, renderItem) {
   }
   return ret;
 }
+function setRef(ref2, id, opts = {}) {
+  const { $templateRefs } = getCurrentInstance();
+  $templateRefs.push({ i: id, r: ref2, k: opts.k, f: opts.f });
+}
 const o = (value, key) => vOn(value, key);
 const f = (source, renderItem) => vFor(source, renderItem);
 const s = (value) => stringifyStyle(value);
@@ -5225,6 +5239,7 @@ const e = (target, ...sources) => extend(target, ...sources);
 const n = (value) => normalizeClass(value);
 const t = (val) => toDisplayString(val);
 const p = (props) => renderProps(props);
+const sr = (ref2, id, opts) => setRef(ref2, id, opts);
 function createApp$1(rootComponent, rootProps = null) {
   rootComponent && (rootComponent.mpType = "app");
   return createVueApp(rootComponent, rootProps).use(plugin);
@@ -5397,7 +5412,7 @@ function getApiCallbacks(args) {
   const apiCallbacks = {};
   for (const name in args) {
     const fn = args[name];
-    if (isFunction(fn)) {
+    if (isFunction$1(fn)) {
       apiCallbacks[name] = tryCatch(fn);
       delete args[name];
     }
@@ -5415,16 +5430,16 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     args = {};
   }
   const { success, fail, complete } = getApiCallbacks(args);
-  const hasSuccess = isFunction(success);
-  const hasFail = isFunction(fail);
-  const hasComplete = isFunction(complete);
+  const hasSuccess = isFunction$1(success);
+  const hasFail = isFunction$1(fail);
+  const hasComplete = isFunction$1(complete);
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
     res.errMsg = normalizeErrMsg(res.errMsg, name);
-    isFunction(beforeAll) && beforeAll(res);
+    isFunction$1(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
-      isFunction(beforeSuccess) && beforeSuccess(res, args);
+      isFunction$1(beforeSuccess) && beforeSuccess(res, args);
       hasSuccess && success(res);
     } else {
       hasFail && fail(res);
@@ -5451,7 +5466,7 @@ function queue(hooks, data, params) {
       promise = Promise.resolve(wrapperHook(hook, params));
     } else {
       const res = hook(data, params);
-      if (isPromise(res)) {
+      if (isPromise$1(res)) {
         promise = Promise.resolve(res);
       }
       if (res === false) {
@@ -5481,7 +5496,7 @@ function wrapperOptions(interceptors2, options = {}) {
     const oldCallback = options[name];
     options[name] = function callbackInterceptor(res) {
       queue(hooks, res, options).then((res2) => {
-        return isFunction(oldCallback) && oldCallback(res2) || res2;
+        return isFunction$1(oldCallback) && oldCallback(res2) || res2;
       });
     };
   });
@@ -5533,7 +5548,7 @@ function invokeApi(method, api, options, params) {
   return api(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
+  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction$1(args[cb]))) {
     return true;
   }
   return false;
@@ -5699,7 +5714,7 @@ const AddInterceptorProtocol = [
 const RemoveInterceptorProtocol = AddInterceptorProtocol;
 function mergeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((hook) => {
-    if (isFunction(interceptor[hook])) {
+    if (isFunction$1(interceptor[hook])) {
       interceptors2[hook] = mergeHook(interceptors2[hook], interceptor[hook]);
     }
   });
@@ -5711,7 +5726,7 @@ function removeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((name) => {
     const hooks = interceptors2[name];
     const hook = interceptor[name];
-    if (isArray$1(hooks) && isFunction(hook)) {
+    if (isArray$1(hooks) && isFunction$1(hook)) {
       remove(hooks, hook);
     }
   });
@@ -5939,11 +5954,11 @@ function promisify(name, api) {
   if (!shouldPromise(name)) {
     return api;
   }
-  if (!isFunction(api)) {
+  if (!isFunction$1(api)) {
     return api;
   }
   return function promiseApi(options = {}, ...rest) {
-    if (isFunction(options.success) || isFunction(options.fail) || isFunction(options.complete)) {
+    if (isFunction$1(options.success) || isFunction$1(options.fail) || isFunction$1(options.complete)) {
       return wrapperReturnValue(name, invokeApi(name, api, options, rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
@@ -5964,13 +5979,13 @@ function initWrapper(protocols2) {
   function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
     if (isPlainObject(fromArgs)) {
       const toArgs = keepFromArgs === true ? fromArgs : {};
-      if (isFunction(argsOption)) {
+      if (isFunction$1(argsOption)) {
         argsOption = argsOption(fromArgs, toArgs) || {};
       }
       for (const key in fromArgs) {
         if (hasOwn(argsOption, key)) {
           let keyOption = argsOption[key];
-          if (isFunction(keyOption)) {
+          if (isFunction$1(keyOption)) {
             keyOption = keyOption(fromArgs[key], fromArgs, toArgs);
           }
           if (!keyOption) {
@@ -5982,7 +5997,7 @@ function initWrapper(protocols2) {
           }
         } else if (CALLBACKS.indexOf(key) !== -1) {
           const callback = fromArgs[key];
-          if (isFunction(callback)) {
+          if (isFunction$1(callback)) {
             toArgs[key] = processCallback(methodName, callback, returnValue);
           }
         } else {
@@ -5992,8 +6007,8 @@ function initWrapper(protocols2) {
         }
       }
       return toArgs;
-    } else if (isFunction(fromArgs)) {
-      if (isFunction(argsOption)) {
+    } else if (isFunction$1(fromArgs)) {
+      if (isFunction$1(argsOption)) {
         argsOption(fromArgs, {});
       }
       fromArgs = processCallback(methodName, fromArgs, returnValue);
@@ -6001,7 +6016,7 @@ function initWrapper(protocols2) {
     return fromArgs;
   }
   function processReturnValue(methodName, res, returnValue, keepReturnValue = false) {
-    if (isFunction(protocols2.returnValue)) {
+    if (isFunction$1(protocols2.returnValue)) {
       res = protocols2.returnValue(methodName, res);
     }
     const realKeepReturnValue = keepReturnValue || false;
@@ -6012,8 +6027,8 @@ function initWrapper(protocols2) {
     if (!hasProtocol && typeof wx[methodName] !== "function") {
       return method;
     }
-    const needWrapper = hasProtocol || isFunction(protocols2.returnValue) || isContextApi(methodName) || isTaskApi(methodName);
-    const hasMethod = hasProtocol || isFunction(method);
+    const needWrapper = hasProtocol || isFunction$1(protocols2.returnValue) || isContextApi(methodName) || isTaskApi(methodName);
+    const hasMethod = hasProtocol || isFunction$1(method);
     if (!hasProtocol && !method) {
       return function() {
         console.error(`微信小程序 暂不支持${methodName}`);
@@ -6025,7 +6040,7 @@ function initWrapper(protocols2) {
     const protocol = protocols2[methodName];
     return function(arg1, arg2) {
       let options = protocol || {};
-      if (isFunction(protocol)) {
+      if (isFunction$1(protocol)) {
         options = protocol(arg1);
       }
       arg1 = processArgs(methodName, arg1, options.args, options.returnValue);
@@ -6047,14 +6062,14 @@ function initWrapper(protocols2) {
   };
 }
 const getLocale = () => {
-  const app = isFunction(getApp) && getApp({ allowDefault: true });
+  const app = isFunction$1(getApp) && getApp({ allowDefault: true });
   if (app && app.$vm) {
     return app.$vm.$locale;
   }
   return getLocaleLanguage$1();
 };
 const setLocale = (locale) => {
-  const app = isFunction(getApp) && getApp();
+  const app = isFunction$1(getApp) && getApp();
   if (!app) {
     return false;
   }
@@ -6424,14 +6439,14 @@ function initGetProvider(providers) {
         service,
         provider: providers[service]
       };
-      isFunction(success) && success(res);
+      isFunction$1(success) && success(res);
     } else {
       res = {
         errMsg: "getProvider:fail:服务[" + service + "]不存在"
       };
-      isFunction(fail) && fail(res);
+      isFunction$1(fail) && fail(res);
     }
-    isFunction(complete) && complete(res);
+    isFunction$1(complete) && complete(res);
   };
 }
 const objectKeys = [
@@ -6954,23 +6969,23 @@ const messageQueue = [];
 const messageExtra = {};
 const EXCEPTION_BEGIN_MARK = "---BEGIN:EXCEPTION---";
 const EXCEPTION_END_MARK = "---END:EXCEPTION---";
-function sendConsoleMessages(messages) {
+function sendConsoleMessages(messages2) {
   if (sendConsole == null) {
-    messageQueue.push(...messages);
+    messageQueue.push(...messages2);
     return;
   }
   sendConsole(JSON.stringify(Object.assign({
     type: "console",
-    data: messages
+    data: messages2
   }, messageExtra)));
 }
 function setSendConsole(value, extra = {}) {
   sendConsole = value;
   Object.assign(messageExtra, extra);
   if (value != null && messageQueue.length > 0) {
-    const messages = messageQueue.slice();
+    const messages2 = messageQueue.slice();
     messageQueue.length = 0;
-    sendConsoleMessages(messages);
+    sendConsoleMessages(messages2);
   }
 }
 const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
@@ -7044,9 +7059,9 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "1.2.3.2,192.168.31.107,127.0.0.1";
+  const hosts = "1.2.3.2,192.168.31.108,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_BrYaMf";
+  const id = "mp-weixin_LHsmdk";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -7378,7 +7393,7 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
 }
 const findMixinRuntimeHooks = /* @__PURE__ */ once(() => {
   const runtimeHooks = [];
-  const app = isFunction(getApp) && getApp({ allowDefault: true });
+  const app = isFunction$1(getApp) && getApp({ allowDefault: true });
   if (app && app.$vm && app.$vm.$) {
     const mixins = app.$vm.$.appContext.mixins;
     if (isArray$1(mixins)) {
@@ -7451,7 +7466,7 @@ function initCreateApp(parseAppOptions) {
 function initCreateSubpackageApp(parseAppOptions) {
   return function createApp2(vm) {
     const appOptions = parseApp(vm);
-    const app = isFunction(getApp) && getApp({
+    const app = isFunction$1(getApp) && getApp({
       allowDefault: true
     });
     if (!app)
@@ -7474,16 +7489,16 @@ function initCreateSubpackageApp(parseAppOptions) {
   };
 }
 function initAppLifecycle(appOptions, vm) {
-  if (isFunction(appOptions.onLaunch)) {
+  if (isFunction$1(appOptions.onLaunch)) {
     const args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
     appOptions.onLaunch(args);
   }
-  if (isFunction(appOptions.onShow) && wx.onAppShow) {
+  if (isFunction$1(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow((args) => {
       vm.$callHook("onShow", args);
     });
   }
-  if (isFunction(appOptions.onHide) && wx.onAppHide) {
+  if (isFunction$1(appOptions.onHide) && wx.onAppHide) {
     wx.onAppHide((args) => {
       vm.$callHook("onHide", args);
     });
@@ -7615,7 +7630,7 @@ function initPageProps({ properties }, rawProps) {
       const opts = rawProps[key];
       if (isPlainObject(opts)) {
         let value = opts.default;
-        if (isFunction(value)) {
+        if (isFunction$1(value)) {
           value = value();
         }
         const type = opts.type;
@@ -7996,11 +8011,317 @@ const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
 const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
+class AbortablePromise {
+  constructor(executor) {
+    this._reject = null;
+    this.promise = new Promise((resolve2, reject) => {
+      executor(resolve2, reject);
+      this._reject = reject;
+    });
+  }
+  // 提供abort方法来中止Promise
+  abort(error) {
+    if (this._reject) {
+      this._reject(error);
+    }
+  }
+  then(onfulfilled, onrejected) {
+    return this.promise.then(onfulfilled, onrejected);
+  }
+  catch(onrejected) {
+    return this.promise.catch(onrejected);
+  }
+}
+function uuid() {
+  return s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
+}
+function s4() {
+  return Math.floor((1 + Math.random()) * 65536).toString(16).substring(1);
+}
+function addUnit(num) {
+  return Number.isNaN(Number(num)) ? `${num}` : `${num}px`;
+}
+function isObj(value) {
+  return Object.prototype.toString.call(value) === "[object Object]" || typeof value === "object";
+}
+function getType(target) {
+  const typeStr = Object.prototype.toString.call(target);
+  const match = typeStr.match(/\[object (\w+)\]/);
+  const type = match && match.length ? match[1].toLowerCase() : "";
+  return type;
+}
+const isDef = (value) => value !== void 0 && value !== null;
+const checkNumRange = (num, label = "value") => {
+  if (num < 0) {
+    throw new Error(`${label} shouldn't be less than zero`);
+  }
+};
+function rgbToHex(r, g, b) {
+  const hex = (r << 16 | g << 8 | b).toString(16);
+  const paddedHex = "#" + "0".repeat(Math.max(0, 6 - hex.length)) + hex;
+  return paddedHex;
+}
+function hexToRgb(hex) {
+  const rgb = [];
+  for (let i = 1; i < 7; i += 2) {
+    rgb.push(parseInt("0x" + hex.slice(i, i + 2), 16));
+  }
+  return rgb;
+}
+const gradient = (startColor, endColor, step = 2) => {
+  const sColor = hexToRgb(startColor);
+  const eColor = hexToRgb(endColor);
+  const rStep = (eColor[0] - sColor[0]) / step;
+  const gStep = (eColor[1] - sColor[1]) / step;
+  const bStep = (eColor[2] - sColor[2]) / step;
+  const gradientColorArr = [];
+  for (let i = 0; i < step; i++) {
+    gradientColorArr.push(
+      rgbToHex(parseInt(String(rStep * i + sColor[0])), parseInt(String(gStep * i + sColor[1])), parseInt(String(bStep * i + sColor[2])))
+    );
+  }
+  return gradientColorArr;
+};
+const isEqual = (value1, value2) => {
+  if (value1 === value2) {
+    return true;
+  }
+  if (!Array.isArray(value1) || !Array.isArray(value2)) {
+    return false;
+  }
+  if (value1.length !== value2.length) {
+    return false;
+  }
+  for (let i = 0; i < value1.length; ++i) {
+    if (value1[i] !== value2[i]) {
+      return false;
+    }
+  }
+  return true;
+};
+const context = {
+  id: 1e3
+};
+function getRect(selector, all, scope, useFields) {
+  return new Promise((resolve2, reject) => {
+    let query = null;
+    if (scope) {
+      query = index.createSelectorQuery().in(scope);
+    } else {
+      query = index.createSelectorQuery();
+    }
+    const method = all ? "selectAll" : "select";
+    const callback = (rect) => {
+      if (all && isArray(rect) && rect.length > 0) {
+        resolve2(rect);
+      } else if (!all && rect) {
+        resolve2(rect);
+      } else {
+        reject(new Error("No nodes found"));
+      }
+    };
+    if (useFields) {
+      query[method](selector).fields({ size: true, node: true }, callback).exec();
+    } else {
+      query[method](selector).boundingClientRect(callback).exec();
+    }
+  });
+}
+function kebabCase(word) {
+  const newWord = word.replace(/[A-Z]/g, function(match) {
+    return "-" + match;
+  }).toLowerCase();
+  return newWord;
+}
+function camelCase(word) {
+  return word.replace(/-(\w)/g, (_, c) => c.toUpperCase());
+}
+function isArray(value) {
+  if (typeof Array.isArray === "function") {
+    return Array.isArray(value);
+  }
+  return Object.prototype.toString.call(value) === "[object Array]";
+}
+function isFunction(value) {
+  return getType(value) === "function" || getType(value) === "asyncfunction";
+}
+function isString(value) {
+  return getType(value) === "string";
+}
+function isNumber(value) {
+  return getType(value) === "number";
+}
+function isPromise(value) {
+  if (isObj(value) && isDef(value)) {
+    return isFunction(value.then) && isFunction(value.catch);
+  }
+  return false;
+}
+function objToStyle(styles) {
+  if (isArray(styles)) {
+    return styles.filter(function(item) {
+      return item != null && item !== "";
+    }).map(function(item) {
+      return objToStyle(item);
+    }).join(";");
+  }
+  if (isString(styles)) {
+    return styles;
+  }
+  if (isObj(styles)) {
+    return Object.keys(styles).filter(function(key) {
+      return styles[key] != null && styles[key] !== "";
+    }).map(function(key) {
+      return [kebabCase(key), styles[key]].join(":");
+    }).join(";");
+  }
+  return "";
+}
+const pause = (ms = 1e3 / 30) => {
+  return new AbortablePromise((resolve2) => {
+    const timer = setTimeout(() => {
+      clearTimeout(timer);
+      resolve2(true);
+    }, ms);
+  });
+};
+function deepClone(obj, cache = /* @__PURE__ */ new Map()) {
+  if (obj === null || typeof obj !== "object") {
+    return obj;
+  }
+  if (isDate(obj)) {
+    return new Date(obj.getTime());
+  }
+  if (obj instanceof RegExp) {
+    return new RegExp(obj.source, obj.flags);
+  }
+  if (obj instanceof Error) {
+    const errorCopy = new Error(obj.message);
+    errorCopy.stack = obj.stack;
+    return errorCopy;
+  }
+  if (cache.has(obj)) {
+    return cache.get(obj);
+  }
+  const copy = Array.isArray(obj) ? [] : {};
+  cache.set(obj, copy);
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      copy[key] = deepClone(obj[key], cache);
+    }
+  }
+  return copy;
+}
+function deepMerge(target, source) {
+  target = deepClone(target);
+  if (typeof target !== "object" || typeof source !== "object") {
+    throw new Error("Both target and source must be objects.");
+  }
+  for (const prop in source) {
+    if (!source.hasOwnProperty(prop))
+      continue;
+    target[prop] = source[prop];
+  }
+  return target;
+}
+function deepAssign(target, source) {
+  Object.keys(source).forEach((key) => {
+    const targetValue = target[key];
+    const newObjValue = source[key];
+    if (isObj(targetValue) && isObj(newObjValue)) {
+      deepAssign(targetValue, newObjValue);
+    } else {
+      target[key] = newObjValue;
+    }
+  });
+  return target;
+}
+function debounce(func, wait, options = {}) {
+  let timeoutId = null;
+  let lastArgs;
+  let lastThis;
+  let result;
+  const leading = isDef(options.leading) ? options.leading : false;
+  const trailing = isDef(options.trailing) ? options.trailing : true;
+  function invokeFunc() {
+    if (lastArgs !== void 0) {
+      result = func.apply(lastThis, lastArgs);
+      lastArgs = void 0;
+    }
+  }
+  function startTimer() {
+    timeoutId = setTimeout(() => {
+      timeoutId = null;
+      if (trailing) {
+        invokeFunc();
+      }
+    }, wait);
+  }
+  function cancelTimer() {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  }
+  function debounced(...args) {
+    lastArgs = args;
+    lastThis = this;
+    if (timeoutId === null) {
+      if (leading) {
+        invokeFunc();
+      }
+      startTimer();
+    } else if (trailing) {
+      cancelTimer();
+      startTimer();
+    }
+    return result;
+  }
+  return debounced;
+}
+const getPropByPath = (obj, path) => {
+  const keys = path.split(".");
+  try {
+    return keys.reduce((acc, key) => acc !== void 0 && acc !== null ? acc[key] : void 0, obj);
+  } catch (error) {
+    return void 0;
+  }
+};
+const isDate = (val) => Object.prototype.toString.call(val) === "[object Date]" && !Number.isNaN(val.getTime());
+function isImageUrl(url) {
+  const imageRegex = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg|image)/i;
+  return imageRegex.test(url);
+}
+function closest(arr, target) {
+  return arr.reduce((prev, curr) => Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev);
+}
+function useParent(key) {
+  const parent = inject(key, null);
+  if (parent) {
+    const instance = getCurrentInstance();
+    const { link, unlink, internalChildren } = parent;
+    link(instance);
+    onUnmounted(() => unlink(instance));
+    const index2 = computed(() => internalChildren.indexOf(instance));
+    return {
+      parent,
+      index: index2
+    };
+  }
+  return {
+    parent: null,
+    index: ref(-1)
+  };
+}
 const numericProp = [Number, String];
 const truthProp = {
   type: Boolean,
   default: true
 };
+const makeRequiredProp = (type) => ({
+  type,
+  required: true
+});
 const makeArrayProp = () => ({
   type: Array,
   default: () => []
@@ -8031,83 +8352,96 @@ const baseProps = {
    */
   customClass: makeStringProp("")
 };
-const floatingPanelProps = {
+const TABS_KEY = Symbol("wd-tabs");
+const tabsProps = {
   ...baseProps,
   /**
-   * 面板的显示高度
+   * 绑定值
    */
-  height: makeNumberProp(0),
+  modelValue: makeNumericProp(0),
   /**
-   * 设置自定义锚点，默认值 [100, windowHeight * 0.6]
+   * 标签数超过阈值可滑动
    */
-  anchors: makeArrayProp(),
+  slidableNum: makeNumberProp(6),
   /**
-   * 弹出面板是否设置底部安全距离（iphone X 类型的机型）
+   * 标签数超过阈值显示导航地图
    */
-  safeAreaInsetBottom: makeBooleanProp(false),
+  mapNum: makeNumberProp(10),
   /**
-   * 是否显示滚动条，默认值为 true
+   * 导航地图的标题
    */
-  showScrollbar: truthProp,
+  mapTitle: String,
   /**
-   * 动画时长，单位毫秒，默认值为 300ms
+   * 粘性布局
    */
-  duration: makeNumericProp(300),
+  sticky: makeBooleanProp(false),
   /**
-   * 是否允许内容区容器拖拽，默认值为 true
+   * 粘性布局吸顶位置
    */
-  contentDraggable: truthProp
+  offsetTop: makeNumberProp(0),
+  /**
+   * 开启手势滑动
+   */
+  swipeable: makeBooleanProp(false),
+  /**
+   * 自动调整底部条宽度，设置了 lineWidth 后无效
+   */
+  autoLineWidth: makeBooleanProp(false),
+  /**
+   * 底部条宽度，单位像素
+   */
+  lineWidth: numericProp,
+  /**
+   * 底部条高度，单位像素
+   */
+  lineHeight: numericProp,
+  /**
+   * 颜色
+   */
+  color: makeStringProp(""),
+  /**
+   * 非活动状态颜色
+   */
+  inactiveColor: makeStringProp(""),
+  /**
+   * 是否开启切换标签内容时的过渡动画
+   */
+  animated: makeBooleanProp(false),
+  /**
+   * 切换动画过渡时间，单位毫秒
+   */
+  duration: makeNumberProp(300),
+  /**
+   * 是否开启滚动导航
+   * 可选值：'auto' | 'always'
+   * @default auto
+   */
+  slidable: makeStringProp("auto")
 };
-function addUnit(num) {
-  return Number.isNaN(Number(num)) ? `${num}` : `${num}px`;
-}
-function isObj(value) {
-  return Object.prototype.toString.call(value) === "[object Object]" || typeof value === "object";
-}
-function getType(target) {
-  const typeStr = Object.prototype.toString.call(target);
-  const match = typeStr.match(/\[object (\w+)\]/);
-  const type = match && match.length ? match[1].toLowerCase() : "";
-  return type;
-}
-function kebabCase(word) {
-  const newWord = word.replace(/[A-Z]/g, function(match) {
-    return "-" + match;
-  }).toLowerCase();
-  return newWord;
-}
-function isArray(value) {
-  if (typeof Array.isArray === "function") {
-    return Array.isArray(value);
-  }
-  return Object.prototype.toString.call(value) === "[object Array]";
-}
-function isString(value) {
-  return getType(value) === "string";
-}
-function objToStyle(styles) {
-  if (isArray(styles)) {
-    return styles.filter(function(item) {
-      return item != null && item !== "";
-    }).map(function(item) {
-      return objToStyle(item);
-    }).join(";");
-  }
-  if (isString(styles)) {
-    return styles;
-  }
-  if (isObj(styles)) {
-    return Object.keys(styles).filter(function(key) {
-      return styles[key] != null && styles[key] !== "";
-    }).map(function(key) {
-      return [kebabCase(key), styles[key]].join(":");
-    }).join(";");
-  }
-  return "";
-}
-function closest(arr, target) {
-  return arr.reduce((prev, curr) => Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev);
-}
+const tabProps = {
+  ...baseProps,
+  /**
+   * 唯一标识符
+   */
+  name: numericProp,
+  /**
+   * tab的标题
+   */
+  title: String,
+  /**
+   *  是否禁用，无法点击
+   */
+  disabled: makeBooleanProp(false),
+  /**
+   * 是否懒加载，切换到该tab时才加载内容
+   * @default true
+   */
+  lazy: makeBooleanProp(true),
+  /**
+   * 徽标属性，透传给 Badge 组件
+   */
+  badgeProps: Object
+};
 function useTouch() {
   const direction = ref("");
   const deltaX = ref(0);
@@ -8146,26 +8480,1044 @@ function useTouch() {
     startY
   };
 }
+function isVNode(value) {
+  return value ? value.__v_isVNode === true : false;
+}
+function flattenVNodes(children) {
+  const result = [];
+  const traverse2 = (children2) => {
+    if (Array.isArray(children2)) {
+      children2.forEach((child) => {
+        var _a;
+        if (isVNode(child)) {
+          result.push(child);
+          if ((_a = child.component) == null ? void 0 : _a.subTree) {
+            result.push(child.component.subTree);
+            traverse2(child.component.subTree.children);
+          }
+          if (child.children) {
+            traverse2(child.children);
+          }
+        }
+      });
+    }
+  };
+  traverse2(children);
+  return result;
+}
+const findVNodeIndex = (vnodes, vnode) => {
+  const index2 = vnodes.indexOf(vnode);
+  if (index2 === -1) {
+    return vnodes.findIndex((item) => vnode.key !== void 0 && vnode.key !== null && item.type === vnode.type && item.key === vnode.key);
+  }
+  return index2;
+};
+function sortChildren(parent, publicChildren, internalChildren) {
+  const vnodes = parent && parent.subTree && parent.subTree.children ? flattenVNodes(parent.subTree.children) : [];
+  internalChildren.sort((a, b) => findVNodeIndex(vnodes, a.vnode) - findVNodeIndex(vnodes, b.vnode));
+  const orderedPublicChildren = internalChildren.map((item) => item.proxy);
+  publicChildren.sort((a, b) => {
+    const indexA = orderedPublicChildren.indexOf(a);
+    const indexB = orderedPublicChildren.indexOf(b);
+    return indexA - indexB;
+  });
+}
+function useChildren(key) {
+  const publicChildren = reactive([]);
+  const internalChildren = reactive([]);
+  const parent = getCurrentInstance();
+  const linkChildren = (value) => {
+    const link = (child) => {
+      if (child.proxy) {
+        internalChildren.push(child);
+        publicChildren.push(child.proxy);
+        sortChildren(parent, publicChildren, internalChildren);
+      }
+    };
+    const unlink = (child) => {
+      const index2 = internalChildren.indexOf(child);
+      publicChildren.splice(index2, 1);
+      internalChildren.splice(index2, 1);
+    };
+    provide(
+      key,
+      Object.assign(
+        {
+          link,
+          unlink,
+          children: publicChildren,
+          internalChildren
+        },
+        value
+      )
+    );
+  };
+  return {
+    children: publicChildren,
+    linkChildren
+  };
+}
+const zhCN = {
+  calendar: {
+    placeholder: "请选择",
+    title: "选择日期",
+    day: "日",
+    week: "周",
+    month: "月",
+    confirm: "确定",
+    startTime: "开始时间",
+    endTime: "结束时间",
+    to: "至",
+    timeFormat: "YY年MM月DD日 HH:mm:ss",
+    dateFormat: "YYYY年MM月DD日",
+    weekFormat: (year, week) => `${year} 第 ${week} 周`,
+    startWeek: "开始周",
+    endWeek: "结束周",
+    startMonth: "开始月",
+    endMonth: "结束月",
+    monthFormat: "YYYY年MM月"
+  },
+  calendarView: {
+    startTime: "开始",
+    endTime: "结束",
+    weeks: {
+      sun: "日",
+      mon: "一",
+      tue: "二",
+      wed: "三",
+      thu: "四",
+      fri: "五",
+      sat: "六"
+    },
+    rangePrompt: (maxRange) => `选择天数不能超过${maxRange}天`,
+    rangePromptWeek: (maxRange) => `选择周数不能超过${maxRange}周`,
+    rangePromptMonth: (maxRange) => `选择月份不能超过${maxRange}个月`,
+    monthTitle: "YYYY年M月",
+    yearTitle: "YYYY年",
+    month: "M月",
+    hour: (value) => `${value}时`,
+    minute: (value) => `${value}分`,
+    second: (value) => `${value}秒`
+  },
+  collapse: {
+    expand: "展开",
+    retract: "收起"
+  },
+  colPicker: {
+    title: "请选择",
+    placeholder: "请选择",
+    select: "请选择"
+  },
+  datetimePicker: {
+    start: "开始时间",
+    end: "结束时间",
+    to: "至",
+    placeholder: "请选择",
+    confirm: "完成",
+    cancel: "取消"
+  },
+  loadmore: {
+    loading: "正在努力加载中...",
+    finished: "已加载完毕",
+    error: "加载失败",
+    retry: "点击重试"
+  },
+  messageBox: {
+    inputPlaceholder: "请输入",
+    confirm: "确定",
+    cancel: "取消",
+    inputNoValidate: "输入的数据不合法"
+  },
+  numberKeyboard: {
+    confirm: "完成"
+  },
+  pagination: {
+    prev: "上一页",
+    next: "下一页",
+    page: (value) => `当前页：${value}`,
+    total: (total) => `当前数据：${total}条`,
+    size: (size2) => `分页大小：${size2}`
+  },
+  picker: {
+    cancel: "取消",
+    done: "完成",
+    placeholder: "请选择"
+  },
+  imgCropper: {
+    confirm: "完成",
+    cancel: "取消"
+  },
+  search: {
+    search: "搜索",
+    cancel: "取消"
+  },
+  steps: {
+    wait: "未开始",
+    finished: "已完成",
+    process: "进行中",
+    failed: "失败"
+  },
+  tabs: {
+    all: "全部"
+  },
+  upload: {
+    error: "上传失败"
+  },
+  input: {
+    placeholder: "请输入..."
+  },
+  selectPicker: {
+    title: "请选择",
+    placeholder: "请选择",
+    select: "请选择",
+    confirm: "确认",
+    filterPlaceholder: "搜索"
+  },
+  tag: {
+    placeholder: "请输入",
+    add: "新增标签"
+  },
+  textarea: {
+    placeholder: "请输入..."
+  },
+  tableCol: {
+    indexLabel: "序号"
+  },
+  signature: {
+    confirmText: "确认",
+    clearText: "清空",
+    revokeText: "撤销",
+    restoreText: "恢复"
+  }
+};
+const lang = ref("zh-CN");
+const messages = reactive({
+  "zh-CN": zhCN
+});
+const Locale = {
+  messages() {
+    return messages[lang.value];
+  },
+  use(newLang, newMessage) {
+    lang.value = newLang;
+    if (newMessage) {
+      this.add({ [newLang]: newMessage });
+    }
+  },
+  add(newMessages = {}) {
+    deepAssign(messages, newMessages);
+  }
+};
+const useTranslate = (name) => {
+  const prefix = name ? camelCase(name) + "." : "";
+  const translate = (key, ...args) => {
+    const currentMessages = Locale.messages();
+    const message = getPropByPath(currentMessages, prefix + key);
+    return isFunction(message) ? message(...args) : message;
+  };
+  return { translate };
+};
+const CELL_GROUP_KEY = Symbol("wd-cell-group");
+const cellGroupProps = {
+  ...baseProps,
+  /**
+   * 分组标题
+   */
+  title: String,
+  /**
+   * 分组右侧内容
+   */
+  value: String,
+  /**
+   * 分组启用插槽
+   */
+  useSlot: makeBooleanProp(false),
+  /**
+   * 是否展示边框线
+   */
+  border: makeBooleanProp(false)
+};
+function useCell() {
+  const { parent: cellGroup, index: index2 } = useParent(CELL_GROUP_KEY);
+  const border = computed(() => {
+    return cellGroup && cellGroup.props.border && index2.value;
+  });
+  return { border };
+}
+const FORM_KEY = Symbol("wd-form");
+const formProps = {
+  ...baseProps,
+  /**
+   * 表单数据对象
+   */
+  model: makeRequiredProp(Object),
+  /**
+   * 表单验证规则
+   */
+  rules: {
+    type: Object,
+    default: () => ({})
+  },
+  /**
+   * 是否在输入时重置表单校验信息
+   */
+  resetOnChange: makeBooleanProp(true),
+  /**
+   * 错误提示类型
+   */
+  errorType: {
+    type: String,
+    default: "message"
+  }
+};
+const inputProps = {
+  ...baseProps,
+  customInputClass: makeStringProp(""),
+  customLabelClass: makeStringProp(""),
+  // 原生属性
+  /**
+   * 占位文本
+   */
+  placeholder: String,
+  /**
+   * 原生属性，指定 placeholder 的样式，目前仅支持color,font-size和font-weight
+   */
+  placeholderStyle: String,
+  /**
+   * 原生属性，指定 placeholder 的样式类
+   */
+  placeholderClass: makeStringProp(""),
+  /**
+   * 原生属性，指定光标与键盘的距离。取 input 距离底部的距离和cursor-spacing指定的距离的最小值作为光标与键盘的距离
+   */
+  cursorSpacing: makeNumberProp(0),
+  /**
+   * 原生属性，指定focus时的光标位置
+   */
+  cursor: makeNumberProp(-1),
+  /**
+   * 原生属性，光标起始位置，自动聚集时有效，需与selection-end搭配使用
+   */
+  selectionStart: makeNumberProp(-1),
+  /**
+   * 原生属性，光标结束位置，自动聚集时有效，需与selection-start搭配使用
+   */
+  selectionEnd: makeNumberProp(-1),
+  /**
+   * 原生属性，键盘弹起时，是否自动上推页面
+   */
+  adjustPosition: makeBooleanProp(true),
+  /**
+   * focus时，点击页面的时候不收起键盘
+   */
+  holdKeyboard: makeBooleanProp(false),
+  /**
+   * 设置键盘右下角按钮的文字，仅在type='text'时生效，可选值：done / go / next / search / send
+   */
+  confirmType: makeStringProp("done"),
+  /**
+   * 点击键盘右下角按钮时是否保持键盘不收起
+   */
+  confirmHold: makeBooleanProp(false),
+  /**
+   * 原生属性，获取焦点
+   */
+  focus: makeBooleanProp(false),
+  /**
+   * 类型，可选值：text / number / digit / idcard
+   */
+  type: makeStringProp("text"),
+  /**
+   * 原生属性，最大长度
+   */
+  maxlength: {
+    type: Number,
+    default: -1
+  },
+  /**
+   * 原生属性，禁用
+   */
+  disabled: makeBooleanProp(false),
+  /**
+   * 微信小程序原生属性，强制 input 处于同层状态，默认 focus 时 input 会切到非同层状态 (仅在 iOS 下生效)
+   */
+  alwaysEmbed: makeBooleanProp(false),
+  // 原生属性结束
+  /**
+   * 输入框的值靠右展示
+   */
+  alignRight: makeBooleanProp(false),
+  /**
+   * 绑定值
+   */
+  modelValue: makeNumericProp(""),
+  /**
+   * 显示为密码框
+   */
+  showPassword: makeBooleanProp(false),
+  /**
+   * 显示清空按钮
+   */
+  clearable: makeBooleanProp(false),
+  /**
+   * 只读
+   */
+  readonly: makeBooleanProp(false),
+  /**
+   * 前置图标，icon组件中的图标类名
+   */
+  prefixIcon: String,
+  /**
+   * 后置图标，icon组件中的图标类名
+   */
+  suffixIcon: String,
+  /**
+   * 显示字数限制，需要同时设置 maxlength
+   */
+  showWordLimit: makeBooleanProp(false),
+  /**
+   * 设置左侧标题
+   */
+  label: String,
+  /**
+   * 设置左侧标题宽度
+   */
+  labelWidth: makeStringProp(""),
+  /**
+   * 设置输入框大小，可选值：large
+   */
+  size: String,
+  /**
+   * 设置输入框错误状态，错误状态时为红色
+   */
+  error: makeBooleanProp(false),
+  /**
+   * 当有label属性时，设置标题和输入框垂直居中，默认为顶部居中
+   */
+  center: makeBooleanProp(false),
+  /**
+   * 非 cell 类型下是否隐藏下划线
+   */
+  noBorder: makeBooleanProp(false),
+  /**
+   * 是否必填
+   */
+  required: makeBooleanProp(false),
+  /**
+   * 表单域 model 字段名，在使用表单校验功能的情况下，该属性是必填的
+   */
+  prop: String,
+  /**
+   * 表单验证规则，结合wd-form组件使用
+   */
+  rules: makeArrayProp(),
+  /**
+   * 显示清除图标的时机，always 表示输入框不为空时展示，focus 表示输入框聚焦且不为空时展示
+   * 类型: "focus" | "always"
+   * 默认值: "always"
+   */
+  clearTrigger: makeStringProp("always"),
+  /**
+   * 是否在点击清除按钮时聚焦输入框
+   * 类型: boolean
+   * 默认值: true
+   */
+  focusWhenClear: makeBooleanProp(true),
+  /**
+   * 是否忽略组件内对文本合成系统事件的处理。为 false 时将触发 compositionstart、compositionend、compositionupdate 事件，且在文本合成期间会触发 input 事件
+   * 类型: boolean
+   * 默认值: true
+   */
+  ignoreCompositionEvent: makeBooleanProp(true),
+  /**
+   * 它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的web和app-vue平台中可使用本属性。
+   * 类型: InputMode
+   * 可选值: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search" | "password"
+   * 默认值: "text"
+   */
+  inputmode: makeStringProp("text")
+};
+const _b64chars = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"];
+const _mkUriSafe = (src) => src.replace(/[+/]/g, (m0) => m0 === "+" ? "-" : "_").replace(/=+\$/m, "");
+const fromUint8Array = (src, rfc4648 = false) => {
+  let b642 = "";
+  for (let i = 0, l = src.length; i < l; i += 3) {
+    const [a0, a1, a2] = [src[i], src[i + 1], src[i + 2]];
+    const ord = a0 << 16 | a1 << 8 | a2;
+    b642 += _b64chars[ord >>> 18];
+    b642 += _b64chars[ord >>> 12 & 63];
+    b642 += typeof a1 !== "undefined" ? _b64chars[ord >>> 6 & 63] : "=";
+    b642 += typeof a2 !== "undefined" ? _b64chars[ord & 63] : "=";
+  }
+  return rfc4648 ? _mkUriSafe(b642) : b642;
+};
+const _btoa = typeof btoa === "function" ? (s2) => btoa(s2) : (s2) => {
+  if (s2.charCodeAt(0) > 255) {
+    throw new RangeError("The string contains invalid characters.");
+  }
+  return fromUint8Array(Uint8Array.from(s2, (c) => c.charCodeAt(0)));
+};
+const utob = (src) => unescape(encodeURIComponent(src));
+function encode(src, rfc4648 = false) {
+  const b642 = _btoa(utob(src));
+  return rfc4648 ? _mkUriSafe(b642) : b642;
+}
+const buttonProps = {
+  ...baseProps,
+  /**
+   * 幽灵按钮
+   */
+  plain: makeBooleanProp(false),
+  /**
+   * 圆角按钮
+   */
+  round: makeBooleanProp(true),
+  /**
+   * 禁用按钮
+   */
+  disabled: makeBooleanProp(false),
+  /**
+   * 是否细边框
+   */
+  hairline: makeBooleanProp(false),
+  /**
+   * 块状按钮
+   */
+  block: makeBooleanProp(false),
+  /**
+   * 按钮类型，可选值：primary / success / info / warning / error / text / icon
+   */
+  type: makeStringProp("primary"),
+  /**
+   * 按钮尺寸，可选值：small / medium / large
+   */
+  size: makeStringProp("medium"),
+  /**
+   * 图标类名
+   */
+  icon: String,
+  /**
+   * 类名前缀，用于使用自定义图标，用法参考Icon组件
+   */
+  classPrefix: makeStringProp("wd-icon"),
+  /**
+   * 加载中按钮
+   */
+  loading: makeBooleanProp(false),
+  /**
+   * 加载图标颜色
+   */
+  loadingColor: String,
+  /**
+   * 开放能力
+   */
+  openType: String,
+  /**
+   * 指定是否阻止本节点的祖先节点出现点击态
+   */
+  hoverStopPropagation: Boolean,
+  /**
+   * 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文
+   */
+  lang: String,
+  /**
+   * 会话来源，open-type="contact"时有效
+   */
+  sessionFrom: String,
+  /**
+   * 会话内消息卡片标题，open-type="contact"时有效
+   */
+  sendMessageTitle: String,
+  /**
+   * 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
+   */
+  sendMessagePath: String,
+  /**
+   * 会话内消息卡片图片，open-type="contact"时有效
+   */
+  sendMessageImg: String,
+  /**
+   * 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
+   */
+  appParameter: String,
+  /**
+   * 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，用户点击后可以快速发送小程序消息，open-type="contact"时有效
+   */
+  showMessageCard: Boolean,
+  /**
+   * 按钮的唯一标识，可用于设置隐私同意授权按钮的id
+   */
+  buttonId: String,
+  /**
+   * 支付宝小程序，当 open-type 为 getAuthorize 时有效。
+   * 可选值：'phoneNumber' | 'userInfo'
+   */
+  scope: String
+};
+const toastDefaultOptionKey = "__TOAST_OPTION__";
+const defaultOptions = {
+  duration: 2e3,
+  show: false
+};
+const None = Symbol("None");
+function useToast(selector = "") {
+  const toastOptionKey = getToastOptionKey(selector);
+  const toastOption = inject(toastOptionKey, ref(None));
+  if (toastOption.value === None) {
+    toastOption.value = defaultOptions;
+    provide(toastOptionKey, toastOption);
+  }
+  let timer = null;
+  const createMethod = (toastOptions) => {
+    return (options) => {
+      return show(deepMerge(toastOptions, typeof options === "string" ? { msg: options } : options));
+    };
+  };
+  const show = (option) => {
+    const options = deepMerge(defaultOptions, typeof option === "string" ? { msg: option } : option);
+    toastOption.value = deepMerge(options, {
+      show: true
+    });
+    timer && clearTimeout(timer);
+    if (toastOption.value.duration && toastOption.value.duration > 0) {
+      timer = setTimeout(() => {
+        timer && clearTimeout(timer);
+        close();
+      }, options.duration);
+    }
+  };
+  const loading = createMethod({
+    iconName: "loading",
+    duration: 0,
+    cover: true
+  });
+  const success = createMethod({
+    iconName: "success",
+    duration: 1500
+  });
+  const error = createMethod({ iconName: "error" });
+  const warning = createMethod({ iconName: "warning" });
+  const info = createMethod({ iconName: "info" });
+  const close = () => {
+    toastOption.value = { show: false };
+  };
+  return {
+    show,
+    loading,
+    success,
+    error,
+    warning,
+    info,
+    close
+  };
+}
+const getToastOptionKey = (selector) => {
+  return selector ? `${toastDefaultOptionKey}${selector}` : toastDefaultOptionKey;
+};
+const toastIcon = {
+  success() {
+    return '<svg width="42px" height="42px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>成功</title><desc>Created with Sketch.</desc><defs><filter x="-63.2%" y="-80.0%" width="226.3%" height="260.0%" filterUnits="objectBoundingBox" id="filter-1"><feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.122733141   0 0 0 0 0.710852582   0 0 0 0 0.514812768  0 0 0 1 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix><feMerge><feMergeNode in="shadowMatrixOuter1"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter><rect id="path-2" x="3.4176226" y="5.81442199" width="3" height="8.5" rx="1.5"></rect><linearGradient x1="50%" y1="0.126649064%" x2="50%" y2="100%" id="linearGradient-4"><stop stop-color="#ACFFBD" stop-opacity="0.208123907" offset="0%"></stop><stop stop-color="#10B87C" offset="100%"></stop></linearGradient></defs><g id="规范" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="反馈-轻提示" transform="translate(-388.000000, -538.000000)"><g id="成功" transform="translate(388.000000, 538.000000)"><circle id="Oval" fill="#34D19D" opacity="0.400000006" cx="21" cy="21" r="20"></circle><circle id="Oval" fill="#34D19D" cx="21" cy="21" r="16"></circle><g id="Group-6" filter="url(#filter-1)" transform="translate(11.500000, 14.000000)"><mask id="mask-3" fill="white"><use xlink:href="#path-2"></use></mask><use id="Rectangle-Copy-24" fill="#C4FFEB" transform="translate(4.917623, 10.064422) rotate(-45.000000) translate(-4.917623, -10.064422) " xlink:href="#path-2"></use><rect id="Rectangle" fill="url(#linearGradient-4)" mask="url(#mask-3)" transform="translate(6.215869, 11.372277) rotate(-45.000000) translate(-6.215869, -11.372277) " x="4.71586891" y="9.52269089" width="3" height="3.69917136"></rect><rect id="Rectangle" fill="#FFFFFF" transform="translate(11.636236, 7.232744) scale(1, -1) rotate(-45.000000) translate(-11.636236, -7.232744) " x="10.1362361" y="-1.02185365" width="3" height="16.5091951" rx="1.5"></rect></g></g></g></g></svg>';
+  },
+  warning() {
+    return '<svg width="42px" height="42px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>警告</title><desc>Created with Sketch.</desc> <defs> <filter x="-240.0%" y="-60.0%" width="580.0%" height="220.0%" filterUnits="objectBoundingBox" id="filter-1"><feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.824756567   0 0 0 0 0.450356612   0 0 0 0 0.168550194  0 0 0 1 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix><feMerge><feMergeNode in="shadowMatrixOuter1"></feMergeNode> <feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><g id="规范" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="反馈-轻提示" transform="translate(-580.000000, -538.000000)"> <g id="警告" transform="translate(580.000000, 538.000000)"><circle id="Oval" fill="#F0883A" opacity="0.400000006" cx="21" cy="21" r="20"></circle><circle id="Oval" fill="#F0883A" cx="21" cy="21" r="16"></circle><g id="Group-6" filter="url(#filter-1)" transform="translate(18.500000, 10.800000)"><rect id="Rectangle" fill="#FFFFFF" transform="translate(2.492935, 7.171583) scale(1, -1) rotate(-360.000000) translate(-2.492935, -7.171583) " x="0.992934699" y="0.955464537" width="3" height="12.4322365" rx="1.5"></rect><rect id="Rectangle-Copy-25" fill="#FFDEC5" transform="translate(2.508751, 17.202636) scale(1, -1) rotate(-360.000000) translate(-2.508751, -17.202636) " x="1.00875134" y="15.200563" width="3" height="4.00414639" rx="1.5"></rect></g></g></g></g></svg>';
+  },
+  info() {
+    return '<svg width="42px" height="42px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>常规</title><desc>Created with Sketch.</desc><defs><filter x="-300.0%" y="-57.1%" width="700.0%" height="214.3%" filterUnits="objectBoundingBox" id="filter-1"><feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.362700096   0 0 0 0 0.409035039   0 0 0 0 0.520238904  0 0 0 1 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix><feMerge><feMergeNode in="shadowMatrixOuter1"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><g id="规范" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="反馈-轻提示" transform="translate(-772.000000, -538.000000)"><g id="常规" transform="translate(772.000000, 538.000000)"><circle id="Oval" fill="#909CB7" opacity="0.4" cx="21" cy="21" r="20"></circle><circle id="Oval" fill="#909CB7" cx="21" cy="21" r="16"></circle><g id="Group-6" filter="url(#filter-1)" transform="translate(18.500000, 9.800000)"><g id="编组-2" transform="translate(2.492935, 10.204709) rotate(-180.000000) translate(-2.492935, -10.204709) translate(0.992935, 0.204709)"><rect id="Rectangle" fill="#FFFFFF" transform="translate(1.500000, 7.000000) scale(1, -1) rotate(-360.000000) translate(-1.500000, -7.000000) " x="0" y="0" width="3" height="14" rx="1.5"></rect><rect id="Rectangle-Copy-25" fill="#EEEEEE" transform="translate(1.500000, 18.000000) scale(1, -1) rotate(-360.000000) translate(-1.500000, -18.000000) " x="0" y="16" width="3" height="4" rx="1.5"></rect></g></g></g></g></g></svg>';
+  },
+  error() {
+    return '<svg width="42px" height="42px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>toast</title><desc>Created with Sketch.</desc><defs><linearGradient x1="99.6229896%" y1="50.3770104%" x2="0.377010363%" y2="50.3770104%" id="linearGradient-1"><stop stop-color="#FFDFDF" offset="0%"></stop><stop stop-color="#F9BEBE" offset="100%"></stop></linearGradient><linearGradient x1="0.377010363%" y1="50.3770104%" x2="99.6229896%" y2="50.3770104%" id="linearGradient-2"><stop stop-color="#FFDFDF" offset="0%"></stop><stop stop-color="#F9BEBE" offset="100%"></stop></linearGradient></defs><g id="规范" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="反馈-轻提示" transform="translate(-196.000000, -538.000000)"> <g id="toast" transform="translate(196.000000, 538.000000)"><circle id="Oval" fill="#FA4350" opacity="0.400000006" cx="21" cy="21" r="20"></circle><circle id="Oval" fill="#FA4350" opacity="0.900000036" cx="21" cy="21" r="16"></circle><rect id="矩形" fill="#FFDFDF" transform="translate(21.071068, 21.071068) rotate(-225.000000) translate(-21.071068, -21.071068) " x="12.5710678" y="19.5710678" width="17" height="3" rx="1.5"></rect><rect id="矩形" fill="url(#linearGradient-1)" transform="translate(19.303301, 22.838835) rotate(-225.000000) translate(-19.303301, -22.838835) " x="17.3033009" y="21.3388348" width="4" height="3"></rect><rect id="矩形" fill="url(#linearGradient-2)" transform="translate(22.838835, 19.303301) rotate(-225.000000) translate(-22.838835, -19.303301) " x="20.8388348" y="17.8033009" width="4" height="3"></rect><rect id="矩形" fill="#FFFFFF" transform="translate(21.071068, 21.071068) rotate(-315.000000) translate(-21.071068, -21.071068) " x="12.5710678" y="19.5710678" width="17" height="3" rx="1.5"></rect></g></g></g></svg>';
+  }
+};
+const floatingPanelProps = {
+  ...baseProps,
+  /**
+   * 面板的显示高度
+   */
+  height: makeNumberProp(0),
+  /**
+   * 设置自定义锚点，默认值 [100, windowHeight * 0.6]
+   */
+  anchors: makeArrayProp(),
+  /**
+   * 弹出面板是否设置底部安全距离（iphone X 类型的机型）
+   */
+  safeAreaInsetBottom: makeBooleanProp(false),
+  /**
+   * 是否显示滚动条，默认值为 true
+   */
+  showScrollbar: truthProp,
+  /**
+   * 动画时长，单位毫秒，默认值为 300ms
+   */
+  duration: makeNumericProp(300),
+  /**
+   * 是否允许内容区容器拖拽，默认值为 true
+   */
+  contentDraggable: truthProp
+};
+const badgeProps = {
+  ...baseProps,
+  /**
+   * 显示值
+   */
+  modelValue: numericProp,
+  /** 当数值为 0 时，是否展示徽标 */
+  showZero: makeBooleanProp(false),
+  bgColor: String,
+  /**
+   * 最大值，超过最大值会显示 '{max}+'，要求 value 是 Number 类型
+   */
+  max: Number,
+  /**
+   * 是否为红色点状标注
+   */
+  isDot: Boolean,
+  /**
+   * 是否隐藏 badge
+   */
+  hidden: Boolean,
+  /**
+   * badge类型，可选值primary / success / warning / danger / info
+   */
+  type: makeStringProp(void 0),
+  /**
+   * 为正时，角标向下偏移对应的像素
+   */
+  top: numericProp,
+  /**
+   * 为正时，角标向左偏移对应的像素
+   */
+  right: numericProp
+};
+const iconProps = {
+  ...baseProps,
+  /**
+   * 使用的图标名字，可以使用链接图片
+   */
+  name: makeRequiredProp(String),
+  /**
+   * 图标的颜色
+   */
+  color: String,
+  /**
+   * 图标的字体大小
+   */
+  size: String,
+  /**
+   * 类名前缀，用于使用自定义图标
+   */
+  classPrefix: makeStringProp("wd-icon")
+};
+const stickyProps = {
+  ...baseProps,
+  /**
+   * 层级
+   */
+  zIndex: makeNumberProp(1),
+  /**
+   * 吸顶距离
+   */
+  offsetTop: makeNumberProp(0)
+};
+const STICKY_BOX_KEY = Symbol("wd-sticky-box");
+const toastProps = {
+  ...baseProps,
+  /**
+   * 选择器
+   * @type {string}
+   * @default ''
+   */
+  selector: makeStringProp(""),
+  /**
+   * 提示信息
+   * @type {string}
+   * @default ''
+   */
+  msg: {
+    type: String,
+    default: ""
+  },
+  /**
+   * 排列方向
+   * @type {'vertical' | 'horizontal'}
+   * @default 'horizontal'
+   */
+  direction: makeStringProp("horizontal"),
+  /**
+   * 图标名称
+   * @type {'success' | 'error' | 'warning' | 'loading' | 'info'}
+   * @default ''
+   */
+  iconName: {
+    type: String,
+    default: ""
+  },
+  /**
+   * 图标大小
+   * @type {number}
+   */
+  iconSize: Number,
+  /**
+   * 加载类型
+   * @type {'outline' | 'ring'}
+   * @default 'outline'
+   */
+  loadingType: makeStringProp("outline"),
+  /**
+   * 加载颜色
+   * @type {string}
+   * @default '#4D80F0'
+   */
+  loadingColor: {
+    type: String,
+    default: "#4D80F0"
+  },
+  /**
+   * 加载大小
+   * @type {number}
+   */
+  loadingSize: Number,
+  /**
+   * 图标颜色
+   * @type {string}
+   */
+  iconColor: String,
+  /**
+   * 位置
+   * @type {'top' | 'middle-top' | 'middle' | 'bottom'}
+   * @default 'middle-top'
+   */
+  position: makeStringProp("middle-top"),
+  /**
+   * 层级
+   * @type {number}
+   * @default 100
+   */
+  zIndex: {
+    type: Number,
+    default: 100
+  },
+  /**
+   * 是否存在遮罩层
+   * @type {boolean}
+   * @default false
+   */
+  cover: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * 图标类名
+   * @type {string}
+   * @default ''
+   */
+  iconClass: {
+    type: String,
+    default: ""
+  },
+  /**
+   * 类名前缀
+   * @type {string}
+   * @default 'wd-icon'
+   */
+  classPrefix: {
+    type: String,
+    default: "wd-icon"
+  },
+  /**
+   * 完全展示后的回调函数
+   * @type {Function}
+   */
+  opened: Function,
+  /**
+   * 完全关闭时的回调函数
+   * @type {Function}
+   */
+  closed: Function
+};
+const resizeProps = {
+  ...baseProps,
+  customContainerClass: makeStringProp("")
+};
+const loadingProps = {
+  ...baseProps,
+  /**
+   * 加载指示器类型，可选值：'outline' | 'ring'
+   */
+  type: makeStringProp("ring"),
+  /**
+   * 设置加载指示器颜色
+   */
+  color: makeStringProp("#4D80F0"),
+  /**
+   * 设置加载指示器大小
+   */
+  size: makeNumericProp("")
+};
+const overlayProps = {
+  ...baseProps,
+  /**
+   * 是否展示遮罩层
+   */
+  show: makeBooleanProp(false),
+  /**
+   * 动画时长，单位毫秒
+   */
+  duration: {
+    type: [Object, Number, Boolean],
+    default: 300
+  },
+  /**
+   * 是否锁定滚动
+   */
+  lockScroll: makeBooleanProp(true),
+  /**
+   * 层级
+   */
+  zIndex: makeNumberProp(10)
+};
+const transitionProps = {
+  ...baseProps,
+  /**
+   * 是否展示组件
+   * 类型：boolean
+   * 默认值：false
+   */
+  show: makeBooleanProp(false),
+  /**
+   * 动画执行时间
+   * 类型：number | boolean | Record<string, number>
+   * 默认值：300 (毫秒)
+   */
+  duration: {
+    type: [Object, Number, Boolean],
+    default: 300
+  },
+  /**
+   * 弹层内容懒渲染，触发展示时才渲染内容
+   * 类型：boolean
+   * 默认值：false
+   */
+  lazyRender: makeBooleanProp(false),
+  /**
+   * 动画类型
+   * 类型：string
+   * 可选值：fade / fade-up / fade-down / fade-left / fade-right / slide-up / slide-down / slide-left / slide-right / zoom-in
+   * 默认值：'fade'
+   */
+  name: [String, Array],
+  /**
+   * 是否在动画结束时销毁子节点（display: none)
+   * 类型：boolean
+   * 默认值：false
+   */
+  destroy: makeBooleanProp(true),
+  /**
+   * 进入过渡的开始状态
+   * 类型：string
+   */
+  enterClass: makeStringProp(""),
+  /**
+   * 进入过渡的激活状态
+   * 类型：string
+   */
+  enterActiveClass: makeStringProp(""),
+  /**
+   * 进入过渡的结束状态
+   * 类型：string
+   */
+  enterToClass: makeStringProp(""),
+  /**
+   * 离开过渡的开始状态
+   * 类型：string
+   */
+  leaveClass: makeStringProp(""),
+  /**
+   * 离开过渡的激活状态
+   * 类型：string
+   */
+  leaveActiveClass: makeStringProp(""),
+  /**
+   * 离开过渡的结束状态
+   * 类型：string
+   */
+  leaveToClass: makeStringProp("")
+};
+exports.AbortablePromise = AbortablePromise;
+exports.CELL_GROUP_KEY = CELL_GROUP_KEY;
+exports.FORM_KEY = FORM_KEY;
+exports.STICKY_BOX_KEY = STICKY_BOX_KEY;
+exports.TABS_KEY = TABS_KEY;
 exports._export_sfc = _export_sfc;
 exports.addUnit = addUnit;
+exports.badgeProps = badgeProps;
+exports.baseProps = baseProps;
+exports.buttonProps = buttonProps;
+exports.cellGroupProps = cellGroupProps;
+exports.checkNumRange = checkNumRange;
 exports.closest = closest;
 exports.computed = computed;
+exports.context = context;
 exports.createSSRApp = createSSRApp;
+exports.debounce = debounce;
+exports.deepClone = deepClone;
+exports.defaultOptions = defaultOptions;
 exports.defineComponent = defineComponent;
 exports.e = e;
+exports.encode = encode;
 exports.f = f;
 exports.floatingPanelProps = floatingPanelProps;
+exports.formProps = formProps;
+exports.getCurrentInstance = getCurrentInstance;
+exports.getPropByPath = getPropByPath;
+exports.getRect = getRect;
+exports.getToastOptionKey = getToastOptionKey;
+exports.gradient = gradient;
+exports.iconProps = iconProps;
 exports.index = index;
+exports.inject = inject;
+exports.inputProps = inputProps;
+exports.isArray = isArray;
+exports.isDef = isDef;
+exports.isEqual = isEqual;
+exports.isFunction = isFunction;
+exports.isImageUrl = isImageUrl;
+exports.isNumber = isNumber;
+exports.isObj = isObj;
+exports.isPromise = isPromise;
+exports.isString = isString;
+exports.loadingProps = loadingProps;
 exports.n = n;
+exports.nextTick$1 = nextTick$1;
 exports.o = o;
 exports.objToStyle = objToStyle;
 exports.onBeforeMount = onBeforeMount;
 exports.onLoad = onLoad;
+exports.onMounted = onMounted;
+exports.overlayProps = overlayProps;
 exports.p = p;
+exports.pause = pause;
+exports.reactive = reactive;
 exports.ref = ref;
+exports.resizeProps = resizeProps;
 exports.resolveComponent = resolveComponent;
 exports.s = s;
+exports.sr = sr;
+exports.stickyProps = stickyProps;
 exports.t = t;
+exports.tabProps = tabProps;
+exports.tabsProps = tabsProps;
+exports.toastIcon = toastIcon;
+exports.toastProps = toastProps;
+exports.transitionProps = transitionProps;
+exports.unref = unref;
+exports.useCell = useCell;
+exports.useChildren = useChildren;
+exports.useParent = useParent;
+exports.useSlots = useSlots;
+exports.useToast = useToast;
 exports.useTouch = useTouch;
+exports.useTranslate = useTranslate;
+exports.uuid = uuid;
 exports.watch = watch;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

@@ -1,5 +1,5 @@
 const TOKEN_KEY = "token";
-export const BASE_URL = "http://localhost:3005/api";
+export const BASE_URL = "http://localhost:3003/api";
 const REQUEST_TIMEOUT = 15000;
 const LOADING_DELAY = 50;
 let loadingTimer;

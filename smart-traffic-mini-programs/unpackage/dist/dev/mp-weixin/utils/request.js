@@ -89,5 +89,9 @@ function request(options) {
 const get = (params) => {
   return request({ ...params, method: "GET" });
 };
+const post = (params) => {
+  return request({ ...params, method: "POST" });
+};
 exports.get = get;
+exports.post = post;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/utils/request.js.map
